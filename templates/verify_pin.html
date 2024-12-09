@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Verificación</h2>
+    <p>Hemos enviado un PIN a tu correo electrónico o teléfono. Por favor, ingrésalo a continuación para ver tus recomendaciones.</p>
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="pin">PIN:</label><br>
+        <input type="text" id="pin" name="pin" required><br><br>
+        <button type="submit" class="btn">Verificar</button>
+    </form>
+{% endblock %}

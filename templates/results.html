@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Tus Recomendaciones</h2>
+    {% if recommendations %}
+        <div class="recommendations">
+            {% for wine in recommendations %}
+                <div class="recommendation-card">
+                    <h3>{{ wine['title'] if 'title' in wine and wine['title'] else "Título Desconocido" }}</h3>
+                    <p><strong>ID:</strong> {{ wine['wine_id'] }}</p>
+                    <p><strong>Precio:</strong> ${{ "%.2f"|format(wine['price']) if 'price' in wine and wine['price'] else "No especificado" }}</p>
+                    <p><strong>Variedad:</strong> {{ wine['variedad'] if 'variedad' in wine and wine['variedad'] else "Desconocida" }}</p>
+                    <p><strong>Sentimiento:</strong> {{ wine['sentiment_label'] }}</p>
+                    <p><strong>Polaridad:</strong> {{ "%.2f"|format(wine['polarity']) }}</p>
+                    <p><strong>Similitud:</strong> {{ "%.2f"|format(wine['similarity']) }}</p>
+                    <ul>
+                        {% for attribute in wine.keys() %}
+                            {% if attribute not in ['wine_id', 'variedad', 'sentiment_label', 'polarity', 'source', 'full_text', 'title', 'similarity', 'price'] %}
+                                <li><strong>{{ attribute.replace('_', ' ').capitalize() }}:</strong> {{ "%.2f"|format(wine[attribute]) }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No se encontraron recomendaciones.</p>
+    {% endif %}
+
+    <!-- Botón para regresar al inicio del quiz -->
+    <div>
+        <a href="{{ url_for('quiz') }}" class="btn">Volver al Inicio</a>
+    </div>
+{% endblock %}
+
+
+
+
+
+

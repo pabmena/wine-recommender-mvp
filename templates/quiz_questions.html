@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Quiz de Preferencias</h2>
+    <form method="POST">
+        {% for question in questions %}
+            <div class="card">
+                <div class="card-content">
+                    {% if question.image %}
+                        <img src="{{ url_for('static', filename=question.image) }}" alt="Imagen relacionada">
+                    {% endif %}
+                    <div>
+                        <p><strong>{{ question.text }}</strong></p>
+                        {% if question.type == 'single_choice' %}
+                            {% for option in question.options %}
+                                <label>
+                                    <input type="radio" name="{{ question.id }}" value="{{ option }}" required>
+                                    {{ option }}
+                                </label><br>
+                            {% endfor %}
+                        {% elif question.type == 'emoji_scale' %}
+                            <div class="emoji-scale">
+                                {% for value, emoji in [('1', '😠'), ('2', '🙁'), ('3', '😐'), ('4', '🙂'), ('5', '😍')] %}
+                                    <label>
+                                        <input type="radio" name="{{ question.id }}" value="{{ value }}" required>
+                                        <span class="emoji">{{ emoji }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn">Enviar Respuestas</button>
+    </form>
+{% endblock %}
+

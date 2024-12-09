@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Quiz de Preferencias</h2>
+    <form method="POST" action="{{ url_for('quiz') }}">
+        {% for question in questions %}
+            <div class="question">
+                <p><strong>{{ loop.index }}. {{ question.text }}</strong></p>
+                {% if question.type == 'single_choice' %}
+                    {% for option in question.options %}
+                        <label>
+                            <input type="radio" name="{{ question.id }}" value="{{ option }}" required>
+                            {{ option }}
+                        </label><br>
+                    {% endfor %}
+                {% elif question.type == 'likert' %}
+                    <label>
+                        <input type="radio" name="{{ question.id }}" value="1" required> Me desagrada mucho
+                    </label><br>
+                    <label>
+                        <input type="radio" name="{{ question.id }}" value="2"> Me desagrada
+                    </label><br>
+                    <label>
+                        <input type="radio" name="{{ question.id }}" value="3"> Neutral
+                    </label><br>
+                    <label>
+                        <input type="radio" name="{{ question.id }}" value="4"> Me gusta
+                    </label><br>
+                    <label>
+                        <input type="radio" name="{{ question.id }}" value="5"> Me encanta
+                    </label><br>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn">Enviar Respuestas</button>
+    </form>
+{% endblock %}
+
+

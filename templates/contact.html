@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>¡Casi listo!</h2>
+    <p>Ingresa tu correo electrónico o número de teléfono para recibir tus recomendaciones personalizadas.</p>
+    <form method="POST">
+        <label for="contact_info">Correo electrónico o Teléfono:</label><br>
+        <input type="text" id="contact_info" name="contact_info" required><br><br>
+        <button type="submit" class="btn">Enviar</button>
+    </form>
+{% endblock %}

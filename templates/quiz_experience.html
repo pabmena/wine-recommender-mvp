@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Comencemos por conocer tu experiencia en vinos</h2>
+    <form method="POST">
+        <div class="question">
+            <p><strong>¿Cómo calificarías tu nivel de experiencia en vinos?</strong></p>
+            <label>
+                <input type="radio" name="experience_level" value="Principiante" required> Principiante
+            </label><br>
+            <label>
+                <input type="radio" name="experience_level" value="Intermedio"> Intermedio
+            </label><br>
+            <label>
+                <input type="radio" name="experience_level" value="Avanzado"> Avanzado
+            </label><br>
+        </div>
+        <button type="submit" class="btn">Continuar</button>
+    </form>
+{% endblock %}
+
