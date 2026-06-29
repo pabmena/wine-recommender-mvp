@@ -1,0 +1,738 @@
+{
+    "timestamp": "2026-06-29T19:05:08.749607",
+    "variety_stats": {
+        "total_catalog_wines": 5872,
+        "unknown_count": 721,
+        "unknown_pct": 12.278610354223433,
+        "top_20_varieties": {
+            "Malbec": 2296,
+            "Cabernet Sauvignon": 731,
+            "Unknown": 721,
+            "Chardonnay": 411,
+            "Torrontés": 335,
+            "Red Blend": 237,
+            "Pinot Noir": 158,
+            "Bonarda": 122,
+            "Sauvignon Blanc": 97,
+            "Syrah": 87,
+            "Bordeaux-style Red Blend": 87,
+            "Cabernet Franc": 79,
+            "Merlot": 67,
+            "Malbec-Cabernet Sauvignon": 56,
+            "Tempranillo": 44,
+            "Rosé": 38,
+            "White Blend": 32,
+            "Sparkling Blend": 29,
+            "Pinot Grigio": 27,
+            "Viognier": 24
+        }
+    },
+    "recommender_quality": {
+        "avg_diversity_varieties_top5": 3.533333333333333,
+        "total_duplicates_in_top5": 0,
+        "total_unknowns_in_top5": 0,
+        "malbec_pct_by_profile_group": {
+            "Intenso/Asado": 48.0,
+            "Fresco/Liviano": 28.000000000000004,
+            "Precio-Calidad": 40.0,
+            "Avanzado Técnico": 40.0,
+            "Principiante Neutro": 40.0,
+            "Contradictorio": 40.0
+        },
+        "avg_confidence_contradictory": 0.4170431818181818,
+        "avg_malbec_pct_fresh_profile": 27.999999999999996
+    },
+    "simulations": [
+        {
+            "perfil_grupo": "Intenso/Asado",
+            "perfil_id": "IA1",
+            "confidence_score": 0.8432121212121211,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Bodega Catena Zapata 2012 Adrianna Malbec (Mendoza)",
+                "Achaval-Ferrer 2014 Finca Mirador Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Luigi Bosca 2009 Icono Malbec-Cabernet Sauvignon (Luján de Cuyo)",
+                "Cheval des Andes 2005 Red (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Malbec-Cabernet Sauvignon",
+                "Bordeaux-style Red Blend"
+            ],
+            "maridaje": "Asado de tira a la leña / Vacío ahumado, Choripán con chimichurri / Provoleta dorada",
+            "explicacion": "Coincide con tu preferencia por su crianza en roble que aporta notas de vainilla y tabaco. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 3
+        },
+        {
+            "perfil_grupo": "Intenso/Asado",
+            "perfil_id": "IA2",
+            "confidence_score": 0.891212121212121,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Bodega Patritti 2008 Primogénito Malbec (Patagonia)",
+                "Atipax 2004 Reserva Red (Tupungato)",
+                "Cinco Sentidos 2005 Gran Reserva Red (Mendoza)",
+                "Bressia 2008 Monteagrelo Syrah (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Red Blend",
+                "Syrah"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Coincide con tu preferencia por sus taninos firmes y bien estructurados y su gran cuerpo y volumen en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Intenso/Asado",
+            "perfil_id": "IA3",
+            "confidence_score": 0.942909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Lamadrid 2007 Matilde Single Vineyard Malbec (Mendoza)",
+                "Tapiz 2008 Black Tears Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Terrazas de Los Andes 2011 Single Vineyard Los Aromos Cabernet Sauvignon (Luján de Cuyo)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Intenso/Asado",
+            "perfil_id": "IA4",
+            "confidence_score": 0.8665454545454545,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Bodega Catena Zapata 2012 Adrianna Malbec (Mendoza)",
+                "Achaval-Ferrer 2014 Finca Mirador Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Luigi Bosca 2009 Icono Malbec-Cabernet Sauvignon (Luján de Cuyo)",
+                "Cheval des Andes 2005 Red (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Malbec-Cabernet Sauvignon",
+                "Bordeaux-style Red Blend"
+            ],
+            "maridaje": "Asado de tira a la leña / Vacío ahumado, Choripán con chimichurri / Provoleta dorada",
+            "explicacion": "Coincide con tu preferencia por su crianza en roble que aporta notas de vainilla y tabaco. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 3
+        },
+        {
+            "perfil_grupo": "Intenso/Asado",
+            "perfil_id": "IA5",
+            "confidence_score": 0.930909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Alta Vista 2012 Single Vineyard Alizarine Malbec (Luján de Cuyo)",
+                "Cinco Sentidos 2005 Gran Reserva Red (Mendoza)",
+                "Graffigna 2008 Grand Reserve Cabernet Sauvignon (San Juan)",
+                "O. Fournier 2005 B Crux Red (Uco Valley)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Cabernet Sauvignon",
+                "Valley"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Coincide con tu preferencia por sus taninos firmes y bien estructurados. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Fresco/Liviano",
+            "perfil_id": "FL1",
+            "confidence_score": 0.8670056818181817,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Alamos 2013 Torrontés (Salta)",
+                "Bodega Elena de Mendoza 2010 Chardonnay (Mendoza)",
+                "Verum 2011 Chardonnay (Alto Valle del Río Negro)",
+                "Tapiz NV Extra Brut Torrontés (Mendoza)",
+                "Gaucho Club 2011 Oak Cask Malbec (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Torrontés",
+                "Chardonnay",
+                "Chardonnay",
+                "Torrontés",
+                "Malbec"
+            ],
+            "maridaje": "Empanadas salteñas picantes, Humita en chala / Tamales",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 1
+        },
+        {
+            "perfil_grupo": "Fresco/Liviano",
+            "perfil_id": "FL2",
+            "confidence_score": 0.9090056818181816,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Tapiz NV Extra Brut Torrontés (Mendoza)",
+                "Michel Torino 2010 Ciclos Fume Sauvignon Blanc (Salta)",
+                "Pentagon 2011 Malbec (Mendoza)",
+                "Aniello 2015 Soil Blanco de Pinot Noir (Patagonia)",
+                "Cicchitti 2010 Malbec (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Torrontés",
+                "Sauvignon Blanc",
+                "Malbec",
+                "Pinot Noir",
+                "Malbec"
+            ],
+            "maridaje": "Empanadas salteñas picantes, Humita en chala / Tamales",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Fresco/Liviano",
+            "perfil_id": "FL3",
+            "confidence_score": 1.0,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)",
+                "Alma del Sur 2008 Seleccionada Bonarda (Mendoza)",
+                "Finca Sophenia 2015 Altosur Sauvignon Blanc (Tupungato)",
+                "Cruz Alta 2008 Reserve Bonarda (Mendoza)",
+                "La Posta 2015 Pizzella Malbec (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Cabernet Sauvignon",
+                "Bonarda",
+                "Sauvignon Blanc",
+                "Bonarda",
+                "Malbec"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 1
+        },
+        {
+            "perfil_grupo": "Fresco/Liviano",
+            "perfil_id": "FL4",
+            "confidence_score": 0.8873181818181818,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Alamos 2013 Torrontés (Salta)",
+                "Bodega Elena de Mendoza 2010 Chardonnay (Mendoza)",
+                "Verum 2011 Chardonnay (Alto Valle del Río Negro)",
+                "Tapiz NV Extra Brut Torrontés (Mendoza)",
+                "Gaucho Club 2011 Oak Cask Malbec (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Torrontés",
+                "Chardonnay",
+                "Chardonnay",
+                "Torrontés",
+                "Malbec"
+            ],
+            "maridaje": "Empanadas salteñas picantes, Humita en chala / Tamales",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 1
+        },
+        {
+            "perfil_grupo": "Fresco/Liviano",
+            "perfil_id": "FL5",
+            "confidence_score": 1.0,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Tapiz NV Extra Brut Torrontés (Mendoza)",
+                "Pentagon 2011 Malbec (Mendoza)",
+                "Cicchitti 2010 Malbec (Mendoza)",
+                "Aniello 2015 Soil Blanco de Pinot Noir (Patagonia)",
+                "Ruca Malen 2013 Reserva Petit Verdot (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Torrontés",
+                "Malbec",
+                "Malbec",
+                "Pinot Noir",
+                "Petit Verdot"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Precio-Calidad",
+            "perfil_id": "PC1",
+            "confidence_score": 0.6674204545454545,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Don Miguel Gascón 2008 Malbec (Mendoza)",
+                "Trapiche 2007 Oak Cask Syrah (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)",
+                "Argento 2011 Malbec (Mendoza)",
+                "San Felipe 2014 Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Syrah",
+                "Cabernet Sauvignon",
+                "Malbec",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Precio-Calidad",
+            "perfil_id": "PC2",
+            "confidence_score": 0.6724090909090908,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "Melipal 2009 Malbec (Mendoza)",
+                "Salentein 2014 Reserve Pinot Noir (Uco Valley)",
+                "Bodega Catena Zapata 2014 Catena Chardonnay (Mendoza)",
+                "Zuccardi 2013 Serie A Cabernet Sauvignon (Valle de Uco)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Pinot Noir",
+                "Chardonnay",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Precio-Calidad",
+            "perfil_id": "PC3",
+            "confidence_score": 0.918909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Melipal 2009 Malbec (Mendoza)",
+                "Alamos 2008 Malbec (Mendoza)",
+                "Cruz Alta 2008 Reserve Bonarda (Mendoza)",
+                "Bodega Norton 2010 Reserva Cabernet Sauvignon (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Bonarda",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Precio-Calidad",
+            "perfil_id": "PC4",
+            "confidence_score": 0.6461704545454546,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Don Miguel Gascón 2008 Malbec (Mendoza)",
+                "Alamos 2008 Malbec (Mendoza)",
+                "Trapiche 2007 Oak Cask Syrah (Mendoza)",
+                "San Felipe 2014 Cabernet Sauvignon (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Syrah",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Precio-Calidad",
+            "perfil_id": "PC5",
+            "confidence_score": 0.8085227272727273,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Trapiche 2007 Oak Cask Syrah (Mendoza)",
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "Melipal 2009 Malbec (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)",
+                "Durigutti 2006 Bonarda (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Syrah",
+                "Malbec",
+                "Malbec",
+                "Cabernet Sauvignon",
+                "Bonarda"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Avanzado Técnico",
+            "perfil_id": "AT1",
+            "confidence_score": 0.942909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Lamadrid 2007 Matilde Single Vineyard Malbec (Mendoza)",
+                "Tapiz 2008 Black Tears Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Terrazas de Los Andes 2011 Single Vineyard Los Aromos Cabernet Sauvignon (Luján de Cuyo)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Avanzado Técnico",
+            "perfil_id": "AT2",
+            "confidence_score": 0.930909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Alta Vista 2012 Single Vineyard Alizarine Malbec (Luján de Cuyo)",
+                "Cinco Sentidos 2005 Gran Reserva Red (Mendoza)",
+                "Graffigna 2008 Grand Reserve Cabernet Sauvignon (San Juan)",
+                "O. Fournier 2005 B Crux Red (Uco Valley)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Cabernet Sauvignon",
+                "Valley"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Coincide con tu preferencia por sus taninos firmes y bien estructurados. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Avanzado Técnico",
+            "perfil_id": "AT3",
+            "confidence_score": 1.0,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Lamadrid 2007 Matilde Single Vineyard Malbec (Mendoza)",
+                "Trapiche 2007 Viña Fausto Orellana de Escobar Single Vineyard Malbec (La Consulta)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Bodega Catena Zapata 2012 Catena Alta Historic Rows Cabernet Sauvignon (Mendoza)",
+                "Andeluna 2007 Pasionado Cabernet Franc (Tupungato)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon",
+                "Cabernet Franc"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Avanzado Técnico",
+            "perfil_id": "AT4",
+            "confidence_score": 0.9529621212121212,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Doña Silvina 2011 Malbec (Mendoza)",
+                "Atipax 2004 Reserva Red (Tupungato)",
+                "Trapiche 2007 Viña Fausto Orellana de Escobar Single Vineyard Malbec (La Consulta)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Mascota 2013 Gran Mascota Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Red Blend",
+                "Malbec",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Avanzado Técnico",
+            "perfil_id": "AT5",
+            "confidence_score": 0.942909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Lamadrid 2007 Matilde Single Vineyard Malbec (Mendoza)",
+                "Tapiz 2008 Black Tears Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Terrazas de Los Andes 2011 Single Vineyard Los Aromos Cabernet Sauvignon (Luján de Cuyo)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Principiante Neutro",
+            "perfil_id": "PN1",
+            "confidence_score": 0.6314090909090909,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Bodega Catena Zapata 2014 Catena Chardonnay (Mendoza)",
+                "Zuccardi 2013 Zeta Red (Uco Valley)",
+                "Luca 2009 G Lot Pinot Noir (Tupungato)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Chardonnay",
+                "Bordeaux-style Red Blend",
+                "Pinot Noir"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Principiante Neutro",
+            "perfil_id": "PN2",
+            "confidence_score": 0.6314090909090909,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "Melipal 2009 Malbec (Mendoza)",
+                "Salentein 2014 Reserve Pinot Noir (Uco Valley)",
+                "Bodega Catena Zapata 2014 Catena Chardonnay (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Pinot Noir",
+                "Chardonnay",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Principiante Neutro",
+            "perfil_id": "PN3",
+            "confidence_score": 0.45,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Bodega Catena Zapata 2014 Catena Chardonnay (Mendoza)",
+                "Zuccardi 2013 Zeta Red (Uco Valley)",
+                "Luca 2009 G Lot Pinot Noir (Tupungato)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Chardonnay",
+                "Bordeaux-style Red Blend",
+                "Pinot Noir"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Principiante Neutro",
+            "perfil_id": "PN4",
+            "confidence_score": 0.6454090909090908,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Bodega Catena Zapata 2014 Catena Chardonnay (Mendoza)",
+                "Zuccardi 2013 Zeta Red (Uco Valley)",
+                "Luca 2009 G Lot Pinot Noir (Tupungato)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Chardonnay",
+                "Bordeaux-style Red Blend",
+                "Pinot Noir"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Principiante Neutro",
+            "perfil_id": "PN5",
+            "confidence_score": 0.45,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "Melipal 2009 Malbec (Mendoza)",
+                "Salentein 2014 Reserve Pinot Noir (Uco Valley)",
+                "Bodega Catena Zapata 2014 Catena Chardonnay (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Pinot Noir",
+                "Chardonnay",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Contradictorio",
+            "perfil_id": "CO1",
+            "confidence_score": 0.48,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "Algodon 2008 Estate Malbec",
+                "Pentagon 2011 Malbec (Mendoza)",
+                "Piattelli 2007 Grand Reserve Trinità Red (Mendoza)",
+                "Verum 2015 Pinot Noir (Alto Valle del Río Negro)",
+                "Luca 2009 G Lot Pinot Noir (Tupungato)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Pinot Noir",
+                "Pinot Noir"
+            ],
+            "maridaje": "Asado de tira a la leña / Vacío ahumado, Choripán con chimichurri / Provoleta dorada",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Contradictorio",
+            "perfil_id": "CO2",
+            "confidence_score": 0.4355340909090909,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "Notro 2010 Tinto Fundación Red (Mendoza)",
+                "Andeluna 2007 Winemaker's Selection Malbec (Tupungato)",
+                "Alamos 2008 Malbec (Mendoza)",
+                "San Felipe 2014 Cabernet Sauvignon (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Red Blend",
+                "Malbec",
+                "Malbec",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Contradictorio",
+            "perfil_id": "CO3",
+            "confidence_score": 0.2267727272727273,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "Bodega Patritti 2008 Primogénito Malbec (Patagonia)",
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "Benegas 2006 Benegas Lynch Cabernet Franc (Mendoza)",
+                "Luca 2009 G Lot Pinot Noir (Tupungato)",
+                "Piattelli 2007 Grand Reserve Trinità Red (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Cabernet Franc",
+                "Pinot Noir",
+                "Red Blend"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Ideal para ti por una acidez sumamente baja y dócil. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Contradictorio",
+            "perfil_id": "CO4",
+            "confidence_score": 0.4629090909090907,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "ZaHa 2012 Malbec (Mendoza)",
+                "Colomé 2007 Reserva Malbec (Calchaquí Valley)",
+                "Lagarde 2012 Primeras Viñas Cabernet Sauvignon (Luján de Cuyo)",
+                "Bodega Chacra 2009 Cincuenta y Cinco Pinot Noir (Río Negro Valley)",
+                "El Enemigo 2010 Gran Enemigo Gualtallary Single Vineyard Cabernet Franc (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Cabernet Sauvignon",
+                "Pinot Noir",
+                "Cabernet Franc"
+            ],
+            "maridaje": "Asado de tira a la leña / Vacío ahumado, Choripán con chimichurri / Provoleta dorada",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "malbecs_count": 2
+        },
+        {
+            "perfil_grupo": "Contradictorio",
+            "perfil_id": "CO5",
+            "confidence_score": 0.48,
+            "confidence_label": "Inicial",
+            "top_5_recommendations": [
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Altocedro 2011 Finca Los Tanos Malbec (Uco Valley)",
+                "Atipax 2004 Reserva Red (Tupungato)",
+                "Via Revolucionaria 2014 Brutal Torrontés (Mendoza)",
+                "Cinco Sentidos 2005 Gran Reserva Red (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Torrontés",
+                "Red Blend"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Coincide con tu preferencia por sus taninos firmes y bien estructurados y su gran cuerpo y volumen en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "malbecs_count": 2
+        }
+    ],
+    "final_decision": "APTO"
+}

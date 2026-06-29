@@ -1,0 +1,252 @@
+{
+    "timestamp": "2026-06-29T18:51:56.495457",
+    "file_existence": {
+        "wine_reviews_argentina_sentiment": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\wine_reviews_argentina_sentiment.csv",
+            "exists": true,
+            "size_bytes": 2612745
+        },
+        "reddit_wine_data_sentiment": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\reddit_wine_data_sentiment.csv",
+            "exists": true,
+            "size_bytes": 1209367
+        },
+        "reddit_argentina_wine_data_sentiment": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\reddit_argentina_wine_data_sentiment.csv",
+            "exists": true,
+            "size_bytes": 8811576
+        },
+        "wine_data_prepared_with_title": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\wine_data_prepared_with_title.csv",
+            "exists": true,
+            "size_bytes": 5326385
+        },
+        "wine_profiles6": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\wine_profiles6.csv",
+            "exists": true,
+            "size_bytes": 5771247
+        },
+        "reddit_argentina_2026": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\raw/reddit_argentina_2026.csv",
+            "exists": true,
+            "size_bytes": 189443
+        },
+        "mercadolibre_reviews_wine_2026": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\raw/mercadolibre_reviews_wine_2026.csv",
+            "exists": true,
+            "size_bytes": 1041
+        },
+        "wine_market_comments_argentina_v2": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\processed/wine_market_comments_argentina_v2.csv",
+            "exists": true,
+            "size_bytes": 362227
+        },
+        "wine_profiles_argentina_v2": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\processed/wine_profiles_argentina_v2.csv",
+            "exists": true,
+            "size_bytes": 6073546
+        },
+        "vectorizer": {
+            "path": "C:\\Users\\pabme\\OneDrive\\Escritorio\\IA-UBA\\IA_Agricultura\\wine-recommender-mvp\\data\\vectorizer.pkl",
+            "exists": true,
+            "size_bytes": 102924
+        }
+    },
+    "v1_counts": {
+        "wine_reviews_argentina_sentiment": {
+            "rows": 3800,
+            "cols": 17
+        },
+        "reddit_wine_data_sentiment": {
+            "rows": 1000,
+            "cols": 12
+        },
+        "reddit_argentina_wine_data_sentiment": {
+            "rows": 1072,
+            "cols": 13
+        },
+        "wine_data_prepared_with_title": {
+            "rows": 5872,
+            "cols": 8
+        },
+        "wine_profiles6": {
+            "rows": 5872,
+            "cols": 26
+        }
+    },
+    "v2_counts": {
+        "reddit_argentina_2026": {
+            "rows": 95,
+            "cols": 8
+        },
+        "mercadolibre_reviews_wine_2026": {
+            "rows": 5,
+            "cols": 6
+        },
+        "wine_market_comments_argentina_v2": {
+            "rows": 105,
+            "cols": 13
+        },
+        "wine_profiles_argentina_v2": {
+            "rows": 5872,
+            "cols": 30
+        }
+    },
+    "v1_sources_total": 5872,
+    "market_raw_total": 105,
+    "descartados_dup": 0,
+    "market_processed_rows": 105,
+    "recency_buckets": {
+        "ultimos_30_dias": 4,
+        "ultimos_90_dias": 10,
+        "ultimos_365_dias": 17,
+        "mas_antiguo": 74
+    },
+    "coverage_stats": {
+        "comments_total": 105,
+        "comments_with_wine": 105,
+        "comments_matched_to_catalog": 11,
+        "comments_general_signal": 94,
+        "catalog_coverage_count": 277,
+        "catalog_coverage_pct": 4.717302452316076
+    },
+    "unknowns_stats": {
+        "initial_unknowns": 2116,
+        "final_unknowns": 721,
+        "unknowns_reduced": 1395
+    },
+    "preservation_stats": {
+        "v1_unique_titles": 4055,
+        "preserved_titles": 4055,
+        "missing_titles": 0,
+        "percentage_preserved": 100.0
+    },
+    "duplicates_stats": {
+        "clean_text_duplicates": 0,
+        "title_text_duplicates": 0
+    },
+    "score_stats": {
+        "argentine_palate_score": {
+            "min": 0.175,
+            "max": 0.7225,
+            "mean": 0.4719813089020733,
+            "median": 0.47,
+            "std": 0.06079273268420972,
+            "nulls": 0
+        },
+        "asado_score": {
+            "min": 0.0,
+            "max": 0.6400000000000001,
+            "mean": 0.024180006811989105,
+            "median": 0.0,
+            "std": 0.06102215912455256,
+            "nulls": 0
+        },
+        "precio_calidad_score": {
+            "min": 0.0,
+            "max": 0.9833333333333334,
+            "mean": 0.4542878095855666,
+            "median": 0.45728993055555556,
+            "std": 0.11836952473983212,
+            "nulls": 0
+        }
+    },
+    "quiz_results": [
+        {
+            "perfil": "Perfil A: Principiante Intenso",
+            "questions_answered": 7,
+            "confidence_score": 0.8432121212121211,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Bodega Catena Zapata 2012 Adrianna Malbec (Mendoza)",
+                "Achaval-Ferrer 2014 Finca Mirador Malbec (Mendoza)",
+                "Lamadrid 2010 Matilde Single Vineyard Malbec (Agrelo)",
+                "Viña Cobos 2012 Bramare Zingaretti Vineyard Malbec (Valle de Uco)",
+                "Rutini 2010 Apartado Gran Malbec (Mendoza)"
+            ],
+            "maridaje": "Asado de tira a la leña / Vacío ahumado, Choripán con chimichurri / Provoleta dorada",
+            "explicacion": "Coincide con tu preferencia por su crianza en roble que aporta notas de vainilla y tabaco. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "has_duplicates": false
+        },
+        {
+            "perfil": "Perfil B: Principiante Fresco/Liviano",
+            "questions_answered": 7,
+            "confidence_score": 0.8670056818181817,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Alamos 2013 Torrontés (Salta)",
+                "Bodega Elena de Mendoza 2010 Chardonnay (Mendoza)",
+                "Verum 2011 Chardonnay (Alto Valle del Río Negro)",
+                "Tapiz NV Extra Brut Torrontés (Mendoza)",
+                "Dominio del Plata 2013 Crios Torrontés (Mendoza)"
+            ],
+            "maridaje": "Empanadas salteñas picantes, Humita en chala / Tamales",
+            "explicacion": "Ideal para ti por su textura suave y sedosa en boca. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "has_duplicates": false
+        },
+        {
+            "perfil": "Perfil C: Asado Precio-Calidad",
+            "questions_answered": 7,
+            "confidence_score": 0.6674204545454545,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Don Miguel Gascón 2008 Malbec (Mendoza)",
+                "Trapiche 2007 Oak Cask Syrah (Mendoza)",
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)",
+                "Argento 2011 Malbec (Mendoza)",
+                "Melipal 2009 Malbec (Mendoza)"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. El mercado local lo valora con reseñas sumamente positivas en contextos de parrilla y juntadas.",
+            "has_duplicates": false
+        },
+        {
+            "perfil": "Perfil D: Avanzado Técnico",
+            "questions_answered": 7,
+            "confidence_score": 0.942909090909091,
+            "confidence_label": "Alto",
+            "top_5_recommendations": [
+                "Lamadrid 2007 Matilde Single Vineyard Malbec (Mendoza)",
+                "Tapiz 2008 Black Tears Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Mapema 2007 pz Malbec (Mendoza)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)"
+            ],
+            "maridaje": "Ojo de bife jugoso / Bife de chorizo, Empanadas criollas de carne cortada a cuchillo",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "has_duplicates": false
+        },
+        {
+            "perfil": "Perfil E: Contradictorio/Neutro",
+            "questions_answered": 7,
+            "confidence_score": 0.6314090909090909,
+            "confidence_label": "Medio",
+            "top_5_recommendations": [
+                "Alamos 2011 Selección Malbec (Mendoza)",
+                "TintoNegro 2012 Finca La Escuela La Piedra Malbec (Mendoza)",
+                "Ruca Malen 2007 Kinien Malbec (Mendoza)",
+                "Nieto Senetiner 2011 Terroir Blend Malbec (Luján de Cuyo)",
+                "Viñalba 2013 Gran Reserva Malbec (Luján de Cuyo)"
+            ],
+            "maridaje": "Picada completa (quesos, fiambres, aceitunas), Provoleta dorada a la parrilla",
+            "explicacion": "Recomendado por su excelente equilibrio sensorial adaptado a tu paladar. Tiene una reputación favorable y opiniones positivas de los consumidores.",
+            "has_duplicates": false
+        }
+    ],
+    "comparison_data": {
+        "v1_recs": [
+            "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+            "Mendoza Vineyards 2012 Gran Reserva by Richard Bonvin Malbec (Mendoza)",
+            "Achaval-Ferrer 2013 Finca Bella Vista Malbec (Mendoza)",
+            "Alta Vista 2006 Single Vineyard Temis Malbec (Uco Valley)",
+            "Alta Vista 2006 Single Vineyard Temis Malbec (Uco Valley)"
+        ],
+        "v2_recs": [
+            "Bodega Catena Zapata 2012 Adrianna Malbec (Mendoza)",
+            "Achaval-Ferrer 2014 Finca Mirador Malbec (Mendoza)",
+            "Lamadrid 2010 Matilde Single Vineyard Malbec (Agrelo)",
+            "Viña Cobos 2012 Bramare Zingaretti Vineyard Malbec (Valle de Uco)",
+            "Rutini 2010 Apartado Gran Malbec (Mendoza)"
+        ]
+    }
+}

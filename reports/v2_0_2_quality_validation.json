@@ -1,0 +1,212 @@
+{
+    "timestamp": "2026-06-29T19:31:40.970336",
+    "version": "V2.0.2",
+    "final_decision": "APTO",
+    "all_profiles_passed": true,
+    "results": [
+        {
+            "perfil": "Fresco/Liviano principiante",
+            "raw_confidence_score": 0.8696363636363637,
+            "display_confidence_score": 0.8696363636363637,
+            "confidence_label": "Alto",
+            "confidence_text": "Conocimos muy bien tu perfil de sabor.",
+            "top_5_recommendations": [
+                "Alamos 2013 Torrontés (Salta)",
+                "Bodega Elena de Mendoza 2010 Chardonnay (Mendoza)",
+                "Verum 2011 Chardonnay (Alto Valle del Río Negro)",
+                "Tapiz NV Extra Brut Torrontés (Mendoza)",
+                "Gaucho Club 2011 Oak Cask Malbec (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Torrontés",
+                "Chardonnay",
+                "Chardonnay",
+                "Torrontés",
+                "Malbec"
+            ],
+            "malbecs_in_top5": 1,
+            "fresh_count_in_top5": 4,
+            "structured_red_count": 1,
+            "duplicates_count": 0,
+            "unknowns_count": 0,
+            "passed": true,
+            "validation_details": {
+                "pass_display_limit": true,
+                "pass_dups": true,
+                "pass_unknowns": true,
+                "pass_fresh_rules": true,
+                "pass_contradictory": true
+            }
+        },
+        {
+            "perfil": "Fresco/Liviano técnico",
+            "raw_confidence_score": 1.0,
+            "display_confidence_score": 0.95,
+            "confidence_label": "Alto",
+            "confidence_text": "Conocimos muy bien tu perfil de sabor.",
+            "top_5_recommendations": [
+                "Doña Silvina 2011 Malbec (Mendoza)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Aniello 2015 Soil Blanco de Pinot Noir (Patagonia)",
+                "Zorzal 2015 Eggo Filoso Pinot Noir (Tupungato)",
+                "Michel Torino 2013 Don David Finca La Primavera #3 Torrontés (Cafayate)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Cabernet Sauvignon",
+                "Pinot Noir",
+                "Pinot Noir",
+                "Torrontés"
+            ],
+            "malbecs_in_top5": 1,
+            "fresh_count_in_top5": 3,
+            "structured_red_count": 2,
+            "duplicates_count": 0,
+            "unknowns_count": 0,
+            "passed": true,
+            "validation_details": {
+                "pass_display_limit": true,
+                "pass_dups": true,
+                "pass_unknowns": true,
+                "pass_fresh_rules": true,
+                "pass_contradictory": true
+            }
+        },
+        {
+            "perfil": "Intenso/Asado",
+            "raw_confidence_score": 0.9183181818181816,
+            "display_confidence_score": 0.9183181818181816,
+            "confidence_label": "Alto",
+            "confidence_text": "Conocimos muy bien tu perfil de sabor.",
+            "top_5_recommendations": [
+                "Viña Alicia 2010 Coleccion de Familia Brote Negro Malbec (Luján de Cuyo)",
+                "Valentin Bianchi 2010 Enzo Bianchi Red",
+                "Viña Cobos 2012 Bramare Zingaretti Vineyard Malbec (Valle de Uco)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Bodega Norton 2005 Perdriel Single Vineyard Red (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Red Blend",
+                "Malbec",
+                "Red Blend",
+                "Bordeaux-style Red Blend"
+            ],
+            "malbecs_in_top5": 2,
+            "fresh_count_in_top5": 0,
+            "structured_red_count": 5,
+            "duplicates_count": 0,
+            "unknowns_count": 0,
+            "passed": true,
+            "validation_details": {
+                "pass_display_limit": true,
+                "pass_dups": true,
+                "pass_unknowns": true,
+                "pass_fresh_rules": true,
+                "pass_contradictory": true
+            }
+        },
+        {
+            "perfil": "Precio-Calidad",
+            "raw_confidence_score": 0.5362727272727272,
+            "display_confidence_score": 0.5362727272727272,
+            "confidence_label": "Medio",
+            "confidence_text": "Tenemos una buena aproximación a tu paladar.",
+            "top_5_recommendations": [
+                "Gouguenheim Winery 2009 Cabernet Sauvignon (Mendoza)",
+                "Valentin Bianchi 2012 Elsa Bianchi Malbec (Mendoza)",
+                "Argento 2011 Malbec (Mendoza)",
+                "Trapiche 2007 Oak Cask Syrah (Mendoza)",
+                "Rutini 2009 Trumpeter Pinot Noir (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Cabernet Sauvignon",
+                "Malbec",
+                "Malbec",
+                "Syrah",
+                "Pinot Noir"
+            ],
+            "malbecs_in_top5": 2,
+            "fresh_count_in_top5": 1,
+            "structured_red_count": 4,
+            "duplicates_count": 0,
+            "unknowns_count": 0,
+            "passed": true,
+            "validation_details": {
+                "pass_display_limit": true,
+                "pass_dups": true,
+                "pass_unknowns": true,
+                "pass_fresh_rules": true,
+                "pass_contradictory": true
+            }
+        },
+        {
+            "perfil": "Avanzado técnico",
+            "raw_confidence_score": 0.942909090909091,
+            "display_confidence_score": 0.942909090909091,
+            "confidence_label": "Alto",
+            "confidence_text": "Conocimos muy bien tu perfil de sabor.",
+            "top_5_recommendations": [
+                "Lamadrid 2007 Matilde Single Vineyard Malbec (Mendoza)",
+                "Tapiz 2008 Black Tears Malbec (Mendoza)",
+                "Bodega Catena Zapata 2007 Nicolas Catena Zapata Red (Mendoza)",
+                "Ruca Malen 2009 Kinien Cabernet Sauvignon (Mendoza)",
+                "Terrazas de Los Andes 2011 Single Vineyard Los Aromos Cabernet Sauvignon (Luján de Cuyo)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Malbec",
+                "Red Blend",
+                "Cabernet Sauvignon",
+                "Cabernet Sauvignon"
+            ],
+            "malbecs_in_top5": 2,
+            "fresh_count_in_top5": 0,
+            "structured_red_count": 5,
+            "duplicates_count": 0,
+            "unknowns_count": 0,
+            "passed": true,
+            "validation_details": {
+                "pass_display_limit": true,
+                "pass_dups": true,
+                "pass_unknowns": true,
+                "pass_fresh_rules": true,
+                "pass_contradictory": true
+            }
+        },
+        {
+            "perfil": "Contradictorio/Neutro",
+            "raw_confidence_score": 0.48,
+            "display_confidence_score": 0.48,
+            "confidence_label": "Exploratorio",
+            "confidence_text": "Estas recomendaciones son una primera aproximación. Podés afinarlas más adelante.",
+            "top_5_recommendations": [
+                "Pulenta Estate 2009 I Malbec (Mendoza)",
+                "Piattelli 2007 Grand Reserve Trinità Red (Mendoza)",
+                "Verum 2015 Pinot Noir (Alto Valle del Río Negro)",
+                "Luigi Bosca 2008 Reserva Pinot Noir (Maipú)",
+                "Urraca 2007 Chardonnay (Mendoza)"
+            ],
+            "top_5_varieties": [
+                "Malbec",
+                "Red Blend",
+                "Pinot Noir",
+                "Pinot Noir",
+                "Chardonnay"
+            ],
+            "malbecs_in_top5": 1,
+            "fresh_count_in_top5": 3,
+            "structured_red_count": 2,
+            "duplicates_count": 0,
+            "unknowns_count": 0,
+            "passed": true,
+            "validation_details": {
+                "pass_display_limit": true,
+                "pass_dups": true,
+                "pass_unknowns": true,
+                "pass_fresh_rules": true,
+                "pass_contradictory": true
+            }
+        }
+    ]
+}

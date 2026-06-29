@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Bienvenido al Recomendador de Vinos</h2>
-    <p>Descubre vinos que se adaptan a tus gustos.</p>
-    <a href="{{ url_for('quiz') }}" class="btn">Comenzar Quiz</a>
+<div class="hero-section">
+    <h2>Descubre tu Vino Ideal</h2>
+    <p>No necesitas ser un experto ni entender términos técnicos. SommAI analiza las preferencias biológicas de tu paladar cotidiano y las mapea con los perfiles sensoriales y la opinión del mercado para recomendarte la botella perfecta.</p>
+    <div class="btn-container">
+        <a href="{{ url_for('quiz') }}" class="btn">Comenzar Quiz de Paladar</a>
+    </div>
+</div>
 {% endblock %}
-

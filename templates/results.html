@@ -1,40 +1,113 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Tus Recomendaciones</h2>
+    <h2>Tus Recomendaciones Personalizadas</h2>
+    
+    <div class="hero-section" style="max-width: 700px; margin: 0 auto 3rem auto; padding: 2rem; border-color: rgba(212, 175, 55, 0.25);">
+        <h3 style="font-family: var(--font-serif); color: var(--gold-primary); margin-top: 0; font-size: 1.5rem;">Entendimiento de tu Paladar: <strong>{{ confidence_label }}</strong></h3>
+        <div style="font-size: 2.5rem; font-weight: 700; color: #fff; margin: 1rem 0;">
+            {{ confidence_percent }}%
+        </div>
+        <div class="attribute-bar-bg" style="max-width: 300px; margin: 0 auto 1rem auto; height: 8px;">
+            <div class="attribute-bar-fill" style="width: {{ confidence_percent }}%; background: linear-gradient(90deg, var(--wine-primary) 0%, var(--gold-primary) 100%);"></div>
+        </div>
+        <p style="font-size: 1.1rem; color: var(--text-muted); font-style: italic; margin-bottom: 0;">
+            {{ confidence_text }}
+        </p>
+    </div>
+
     {% if recommendations %}
-        <div class="recommendations">
+        <div class="recommendations-grid">
             {% for wine in recommendations %}
-                <div class="recommendation-card">
-                    <h3>{{ wine['title'] if 'title' in wine and wine['title'] else "Título Desconocido" }}</h3>
-                    <p><strong>ID:</strong> {{ wine['wine_id'] }}</p>
-                    <p><strong>Precio:</strong> ${{ "%.2f"|format(wine['price']) if 'price' in wine and wine['price'] else "No especificado" }}</p>
-                    <p><strong>Variedad:</strong> {{ wine['variedad'] if 'variedad' in wine and wine['variedad'] else "Desconocida" }}</p>
-                    <p><strong>Sentimiento:</strong> {{ wine['sentiment_label'] }}</p>
-                    <p><strong>Polaridad:</strong> {{ "%.2f"|format(wine['polarity']) }}</p>
-                    <p><strong>Similitud:</strong> {{ "%.2f"|format(wine['similarity']) }}</p>
-                    <ul>
-                        {% for attribute in wine.keys() %}
-                            {% if attribute not in ['wine_id', 'variedad', 'sentiment_label', 'polarity', 'source', 'full_text', 'title', 'similarity', 'price'] %}
-                                <li><strong>{{ attribute.replace('_', ' ').capitalize() }}:</strong> {{ "%.2f"|format(wine[attribute]) }}</li>
+                <div class="wine-card">
+                    <div>
+                        <div class="wine-header">
+                            <h3 class="wine-title">{{ wine.title }}</h3>
+                            <span class="match-badge">{{ wine.match_rate }}% Match</span>
+                        </div>
+                        
+                        <div class="wine-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Precio</span>
+                                <span class="meta-value">
+                                    {% if wine.price %}
+                                        ${{ "%.2f"|format(wine.price) }}
+                                    {% else %}
+                                        No disponible
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Variedad</span>
+                                <span class="meta-value">{{ wine.variedad }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Afinidad Argentina</span>
+                                <span class="meta-value" style="color: {% if wine.afinidad_argentine == 'Alta' %}#81c784{% elif wine.afinidad_argentine == 'Media' %}#ffd54f{% else %}#e57373{% endif %};">
+                                    {{ wine.afinidad_argentine }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Indicadores Locales Argentinos -->
+                        <div style="margin-bottom: 1.2rem; font-size: 0.9rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.8rem;">
+                            <div style="margin-bottom: 0.4rem;">
+                                <strong style="color: var(--gold-primary);">Maridaje Sugerido:</strong> 
+                                <span style="color: var(--text-light);">{{ wine.ideal_para }}</span>
+                            </div>
+                            <div>
+                                <strong style="color: var(--gold-primary);">Ocasión Recomendada:</strong> 
+                                <span style="color: var(--text-light);">{{ wine.ocasion }}</span>
+                            </div>
+                        </div>
+
+                        <div class="sentiment-indicator sentiment-{{ wine.sentiment_label }}">
+                            <div class="sentiment-dot"></div>
+                            <span>Mercado: {{ wine.sentiment_label }} (Polaridad: {{ "%.2f"|format(wine.polarity) }})</span>
+                        </div>
+
+                        <div class="wine-explanation">
+                            {{ wine.explanation }}
+                        </div>
+                    </div>
+
+                    <!-- Perfil Sensorial (Atributos Clave) -->
+                    <div class="wine-attributes">
+                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-primary);">Perfil del Vino</h4>
+                        
+                        {% set display_attributes = [
+                            ('frutas_rojas', 'Frutas Rojas'),
+                            ('frutas_negras', 'Frutas Negras'),
+                            ('especias', 'Especias'),
+                            ('acidez', 'Acidez'),
+                            ('madera_y_otros', 'Madera/Roble'),
+                            ('cuerpo', 'Cuerpo'),
+                            ('taninos', 'Taninos'),
+                            ('dulzor', 'Dulzor')
+                        ] %}
+                        
+                        {% for key, label in display_attributes %}
+                            {% if wine[key] is defined %}
+                                <div class="attribute-row">
+                                    <span class="attribute-name">{{ label }}</span>
+                                    <div class="attribute-bar-bg">
+                                        <div class="attribute-bar-fill" style="width: {{ (wine[key] * 100)|int }}%;"></div>
+                                    </div>
+                                    <span class="attribute-value">{{ (wine[key] * 100)|int }}%</span>
+                                </div>
                             {% endif %}
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p>No se encontraron recomendaciones.</p>
+        <div class="hero-section">
+            <p>No pudimos encontrar recomendaciones que se ajusten exactamente a tus filtros de precio. Intenta ajustar tu presupuesto.</p>
+        </div>
     {% endif %}
 
-    <!-- Botón para regresar al inicio del quiz -->
-    <div>
-        <a href="{{ url_for('quiz') }}" class="btn">Volver al Inicio</a>
+    <div class="btn-container" style="margin-top: 4rem;">
+        <a href="{{ url_for('quiz') }}" class="btn">Rehacer Quiz de Paladar</a>
     </div>
 {% endblock %}
-
-
-
-
-
-

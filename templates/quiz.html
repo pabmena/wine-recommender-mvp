@@ -1,39 +1,70 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Quiz de Preferencias</h2>
-    <form method="POST" action="{{ url_for('quiz') }}">
-        {% for question in questions %}
-            <div class="question">
-                <p><strong>{{ loop.index }}. {{ question.text }}</strong></p>
-                {% if question.type == 'single_choice' %}
-                    {% for option in question.options %}
-                        <label>
-                            <input type="radio" name="{{ question.id }}" value="{{ option }}" required>
-                            {{ option }}
-                        </label><br>
-                    {% endfor %}
-                {% elif question.type == 'likert' %}
-                    <label>
-                        <input type="radio" name="{{ question.id }}" value="1" required> Me desagrada mucho
-                    </label><br>
-                    <label>
-                        <input type="radio" name="{{ question.id }}" value="2"> Me desagrada
-                    </label><br>
-                    <label>
-                        <input type="radio" name="{{ question.id }}" value="3"> Neutral
-                    </label><br>
-                    <label>
-                        <input type="radio" name="{{ question.id }}" value="4"> Me gusta
-                    </label><br>
-                    <label>
-                        <input type="radio" name="{{ question.id }}" value="5"> Me encanta
-                    </label><br>
+    <h2 style="margin-bottom: 1.5rem;">Conociendo tu Paladar</h2>
+    
+    <!-- Barra de progreso premium estilo Tastry -->
+    {% set progress = 10 %}
+    {% if total_steps == "Refinamiento" %}
+        {% set progress = 85 %}
+    {% elif total_steps and total_steps|int > 0 %}
+        {% set progress = (step_num|int / total_steps|int) * 100 %}
+    {% endif %}
+    
+    <div style="max-width: 700px; margin: 0 auto 2.5rem auto;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-primary); font-weight: 600; margin-bottom: 0.5rem;">
+            <span>
+                {% if total_steps == "Refinamiento" %}
+                    Fase de Refinamiento (Paso {{ step_num }})
+                {% else %}
+                    Pregunta {{ step_num }} de {{ total_steps }}
                 {% endif %}
+            </span>
+            <span>{{ progress|int }}% Completado</span>
+        </div>
+        <div class="attribute-bar-bg" style="height: 6px; width: 100%; border-radius: 3px; background: rgba(255, 255, 255, 0.05); overflow: hidden;">
+            <div class="attribute-bar-fill" style="width: {{ progress }}%; height: 100%; background: linear-gradient(90deg, var(--wine-primary) 0%, var(--gold-primary) 100%); transition: width 0.4s ease;"></div>
+        </div>
+        <div style="text-align: center; font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem; font-style: italic;">
+            {{ confidence_text }}
+        </div>
+    </div>
+    
+    <form id="quiz-form" method="POST" action="{{ url_for('quiz') }}">
+        <input type="hidden" name="question_id" value="{{ question.id }}">
+        
+        <div class="question-card" style="max-width: 700px; margin: 0 auto 3rem auto; padding: 2.5rem 2rem;">
+            <h3 class="question-text" style="text-align: center; margin-bottom: 2.5rem; font-size: 1.7rem; font-weight: 400; line-height: 1.4;">
+                {{ question.text }}
+            </h3>
+            
+            <div class="options-container" style="gap: 1.2rem;">
+                {% for option in question.options %}
+                    <label class="option-label" style="position: relative; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; padding: 1.2rem 1.6rem; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); cursor: pointer;">
+                        <input type="radio" name="response_val" value="{{ option.value }}" required 
+                               style="margin-right: 1.2rem; cursor: pointer; accent-color: var(--gold-primary);"
+                               onclick="handleOptionSelect(this)">
+                        <span style="font-size: 1.1rem; color: var(--text-light); font-weight: 400;">{{ option.label }}</span>
+                    </label>
+                {% endfor %}
             </div>
-        {% endfor %}
-        <button type="submit" class="btn">Enviar Respuestas</button>
+        </div>
     </form>
+
+    <script>
+        function handleOptionSelect(radioInput) {
+            // Remarcar visualmente la opción seleccionada antes de enviar
+            const parentLabel = radioInput.closest('label');
+            if (parentLabel) {
+                parentLabel.style.borderColor = 'var(--gold-primary)';
+                parentLabel.style.background = 'rgba(88, 24, 31, 0.25)';
+                parentLabel.style.boxShadow = '0 0 15px rgba(212, 175, 55, 0.15)';
+            }
+            
+            // Retardo de 250ms para que el usuario perciba la selección
+            setTimeout(() => {
+                document.getElementById('quiz-form').submit();
+            }, 250);
+        }
+    </script>
 {% endblock %}
-
-
