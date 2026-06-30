@@ -18,12 +18,20 @@ from config.taste_mapping import (
 )
 from config.confidence import should_continue_quiz, choose_next_question, calculate_confidence
 
+# Cargar variables de entorno en desarrollo local
+from dotenv import load_dotenv
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = 'somm_ai_secret_key_2026'
+app.secret_key = os.getenv("SECRET_KEY", "dev-only-change-me")
 
 # Rutas de los archivos
 current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Elegir la carpeta de datos activa: si 'data' no tiene los archivos clave, usar 'demo_data'
 data_dir = os.path.join(current_dir, 'data')
+if not os.path.exists(os.path.join(data_dir, 'processed/wine_profiles_argentina_v2.csv')):
+    data_dir = os.path.join(current_dir, 'demo_data')
 
 # Ruta al dataset de perfiles de vino V2 (actualizado y procesado)
 profiles_file_v2 = os.path.join(data_dir, 'processed/wine_profiles_argentina_v2.csv')
@@ -1418,4 +1426,6 @@ def commercial_landing():
     return render_template('commercial_landing.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 5000))
+    debug_mode = os.getenv("FLASK_DEBUG", "False").lower() in ["true", "1"]
+    app.run(host="0.0.0.0", port=port, debug=debug_mode)

@@ -32,6 +32,8 @@ def run_quiz_experience_validation():
     # 1. Cargar el catálogo original del cliente para verificar procedencia
     catalog_path = os.path.join(ROOT_DIR, f"data/clients/{client_id}/catalog.csv")
     if not os.path.exists(catalog_path):
+        catalog_path = os.path.join(ROOT_DIR, f"demo_data/clients/{client_id}/catalog.csv")
+    if not os.path.exists(catalog_path):
         print(f"Error: No existe el catálogo en {catalog_path}")
         return
         
@@ -121,8 +123,19 @@ def run_quiz_experience_validation():
     session_id = "test-session-quiz-experience"
 
     # Inicializar SQLite limpia para validar inserción física
+    os.makedirs(os.path.dirname(DATABASE_PATH), exist_ok=True)
     conn = sqlite3.connect(DATABASE_PATH)
     c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp TEXT NOT NULL,
+            client_id TEXT NOT NULL,
+            event_type TEXT NOT NULL,
+            session_id TEXT,
+            payload TEXT
+        )
+    ''')
     c.execute("DELETE FROM events WHERE session_id = ?", (session_id,))
     conn.commit()
     conn.close()

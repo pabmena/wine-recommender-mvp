@@ -26,6 +26,8 @@ def run_commercial_validation():
     # 1. Cargar el catálogo original del cliente para verificar procedencia
     catalog_path = f"data/clients/{client_id}/catalog.csv"
     if not os.path.exists(catalog_path):
+        catalog_path = f"demo_data/clients/{client_id}/catalog.csv"
+    if not os.path.exists(catalog_path):
         print(f"Error: No existe el catálogo en {catalog_path}")
         return
         
