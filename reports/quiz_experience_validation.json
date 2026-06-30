@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-06-30T01:24:43.098023",
+    "timestamp": "2026-06-30T01:38:34.685683",
     "verdict": "APTO",
     "results": [
         {
@@ -51,8 +51,8 @@
             "quiz_answered",
             "quiz_level_selected",
             "quiz_intent_selected",
-            "assistant_question_clicked",
-            "wine_explanation_opened"
+            "wine_explanation_opened",
+            "assistant_question_clicked"
         ]
     }
 }

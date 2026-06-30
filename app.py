@@ -169,7 +169,7 @@ def index():
     session.pop('knowledge_level', None)
     session.pop('refinement_questions', None)
     session.pop('confidence_score', None)
-    return redirect(url_for('commercial_landing'))
+    return redirect("/commercial", code=302)
 
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
