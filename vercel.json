@@ -8,6 +8,13 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "status": 302,
+      "headers": {
+        "Location": "/commercial"
+      }
+    },
+    {
       "src": "/static/(.*)",
       "dest": "/static/$1"
     },

@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+<script>window.location.replace("/commercial");</script>
+<noscript>
+  <meta http-equiv="refresh" content="0; url=/commercial">
+</noscript>
 <div class="hero-section">
-    <h2>Descubre tu Vino Ideal</h2>
-    <p>No necesitas ser un experto ni entender términos técnicos. Descorcha.IA analiza las preferencias de paladar cotidianas de tu gusto y las mapea con los perfiles sensoriales y la opinión del mercado para recomendarte la botella perfecta.</p>
+    <h2>Redirigiendo a Descorcha.IA</h2>
+    <p>La experiencia comercial de Descorcha.IA se encuentra en la landing principal.</p>
     <div class="btn-container">
-        <a href="{{ url_for('quiz') }}" class="btn">Comenzar Quiz de Paladar</a>
+        <a href="/commercial" class="btn">Ir a Descorcha.IA</a>
     </div>
 </div>
 {% endblock %}
