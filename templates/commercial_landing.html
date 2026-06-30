@@ -6,6 +6,76 @@
     <title>Descorcha.IA - El vino correcto para cada paladar</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/commercial.css') }}">
     <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <style>
+        /* Estilos para la sección Comenzá Simplificada */
+        .start-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 6rem 1.5rem;
+            text-align: center;
+        }
+        .start-section .section-header {
+            margin-bottom: 3rem;
+        }
+        .start-section .eyebrow {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold-primary);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .start-section h2 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        .start-section p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        .start-section .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            text-align: left;
+            margin-top: 3rem;
+        }
+        .start-section .step-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .start-section .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--gold-muted);
+        }
+        .start-section .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--wine-primary);
+            color: var(--gold-primary);
+            font-weight: 700;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .start-section .step-card p {
+            color: var(--text-main);
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 <body>
 
@@ -328,30 +398,34 @@
         </div>
     </section>
 
-    <!-- 13. Sección “Comenzá” -->
-    <section id="comenzar" class="section-container" style="max-width: 800px; text-align: center;">
-        <h2 class="section-title">Es rápido y simple empezar</h2>
-        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 3rem;">
-            Te guiamos en una primera demo guiada para mostrarte cómo recomendaría Descorcha.IA sobre tu propio inventario:
-        </p>
-        
-        <div style="display: flex; flex-direction: column; gap: 1.5rem; text-align: left; max-width: 500px; margin: 0 auto;">
-            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
-                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</div>
-                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Compartís una muestra</strong> de tu catálogo en Excel o CSV.</p>
-            </div>
-            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
-                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</div>
-                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Configuramos</strong> una experiencia demo white-label con tu marca.</p>
-            </div>
-            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
-                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</div>
-                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Probás recomendaciones</strong> con perfiles reales de consumidores.</p>
-            </div>
-            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
-                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">4</div>
-                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Revisás</strong> las métricas iniciales del piloto.</p>
-            </div>
+    <!-- 13. Sección “Comenzá” Simplificada -->
+    <section class="start-section" id="comenzar">
+        <div class="section-header">
+            <span class="eyebrow">Comenzá</span>
+            <h2>Es rápido y simple empezar</h2>
+            <p>Te guiamos en una primera demostración para mostrarte cómo recomendaría Descorcha.IA sobre tu propio inventario.</p>
+        </div>
+
+        <div class="steps-grid">
+            <article class="step-card">
+                <span class="step-number">1</span>
+                <p>Compartís una muestra de tu catálogo en Excel o CSV.</p>
+            </article>
+
+            <article class="step-card">
+                <span class="step-number">2</span>
+                <p>Configuramos una experiencia demo white-label con tu marca.</p>
+            </article>
+
+            <article class="step-card">
+                <span class="step-number">3</span>
+                <p>Probás recomendaciones con perfiles reales de consumidores.</p>
+            </article>
+
+            <article class="step-card">
+                <span class="step-number">4</span>
+                <p>Revisás las métricas iniciales del piloto.</p>
+            </article>
         </div>
     </section>
 
@@ -471,9 +545,9 @@
         
         <div class="footer-bottom">
             <div>&copy; 2026 Descorcha.IA. Todos los derechos reservados.</div>
-            <div style="color: var(--gold-primary); font-style: italic; font-weight: 500; letter-spacing: 0.5px;">
+            <p class="responsible-consumption" style="color: var(--gold-primary); font-style: italic; font-weight: 500; letter-spacing: 0.5px; margin: 0;">
                 Descorcha.IA promueve el consumo responsable de bebidas alcohólicas. Prohibida su venta a menores de 18 años. Beber con moderación.
-            </div>
+            </p>
         </div>
     </footer>
 
