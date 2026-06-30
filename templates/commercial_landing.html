@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descorcha.IA - El vino correcto para cada paladar</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/commercial.css') }}">
+    <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+
+    <!-- 1. Header -->
+    <header class="site-header">
+        <nav class="header-nav">
+            <div class="logo-brand">
+                <a href="/commercial">
+                    <img src="{{ url_for('static', filename='img/commercial/logotipo-descorcha-ia.jpg') }}" alt="Descorcha.IA" style="height: 65px; vertical-align: middle; border-radius: 4px;">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#para-quien" class="nav-link">Con quién trabajamos</a></li>
+                <li><a href="#soluciones" class="nav-link">Soluciones</a></li>
+                <li><a href="#como-funciona" class="nav-link">Cómo funciona</a></li>
+                <li><a href="#demos" class="nav-link">Demo</a></li>
+                <li><a href="#contacto" class="nav-link">Contacto</a></li>
+                <li><a href="/admin/demo_vinoteca/dashboard" class="nav-link" style="color: var(--gold-primary); font-weight: 500;">Iniciar sesión cliente</a></li>
+                <li><a href="#contacto" class="btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; border-radius: 20px; margin-left: 0.5rem;">Reservar demo</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 2. Hero principal (Fondo viñedo Mendoza Valle de Uco con overlay) -->
+    <!-- Fondo: static/img/vineyards/mendoza-valle-uco.jpg -->
+    <section class="hero-vineyard-wrapper">
+        <div class="section-container hero-content-box">
+            <div class="hero-text">
+                <span class="bajada-secundaria" style="margin-bottom: 1rem; text-transform: none; font-size: 1.1rem; letter-spacing: 0.5px;">Diseñado para vinotecas, bodegas y restaurantes de Argentina y Latam.</span>
+                <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-primary); font-weight: 600; display: block; margin-bottom: 2rem;">Inspirado en Mendoza, Cafayate, Patagonia y los nuevos hábitos de consumo del vino argentino.</span>
+                <h1 style="margin-bottom: 1rem;">Conectá tus vinos con los <span>consumidores que los van a amar</span>.</h1>
+                <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2.5rem;">
+                    Descorcha.IA transforma tu catálogo en una experiencia de recomendación personalizada, usando inteligencia artificial, paladar adaptativo, maridajes locales e inventario real.
+                    <span style="display: block; margin-top: 1rem; color: var(--gold-primary); font-family: var(--font-serif); font-style: italic;">Vendé más vino con una personalización pensada para el paladar argentino y latinoamericano.</span>
+                </p>
+                <div class="hero-ctas">
+                    <a href="#contacto" class="btn-primary">Reservar una demo</a>
+                    <a href="/c/demo_vinoteca" class="btn-secondary">Ver demo vinoteca</a>
+                </div>
+            </div>
+            
+            <div class="mockup-container">
+                <!-- Mockup de tarjeta de recomendación adaptada a Descorcha.IA Uncorked -->
+                <div class="mockup-card">
+                    <div class="mockup-header">
+                        <span class="mockup-tag">Estilo Sugerido</span>
+                        <span class="mockup-match">92% Match</span>
+                    </div>
+                    <h3 class="mockup-title">Trapiche 2014 Oak Cask Malbec</h3>
+                    <div class="mockup-meta">
+                        <span>Variedad: <strong>Malbec</strong></span>
+                        <span>Precio: <strong>$82.000,00</strong></span>
+                    </div>
+                    
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.2rem;">
+                        <span style="display: block; margin-bottom: 0.4rem;"><strong style="color: var(--gold-primary);">Maridaje:</strong> Vacío a la parrilla, choripán, provoleta</span>
+                        <span><strong style="color: var(--gold-primary);">Disponibilidad:</strong> Stock en Local (15 unidades)</span>
+                    </div>
+                    
+                    <p class="mockup-explanation" style="font-size: 0.88rem; color: var(--text-muted); font-style: italic; margin-bottom: 1.5rem; line-height: 1.5;">
+                        "Recomendado por su perfil de cuerpo estructurado, fruta negra madura y notas tostadas de roble, alineado con tu preferencia por vinos intensos para asado."
+                    </p>
+                    
+                    <div style="display: flex; gap: 0.8rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                        <a href="/c/demo_vinoteca" class="btn-secondary" style="flex: 1; padding: 0.5rem; font-size: 0.78rem; text-align: center; border-radius: 8px;">🛒 Ver Producto</a>
+                        <a href="/track/whatsapp/demo_vinoteca/DEMO-WINE-002" target="_blank" class="btn-primary" style="flex: 1; padding: 0.5rem; font-size: 0.78rem; text-align: center; border-radius: 8px; background: linear-gradient(135deg, #128c7e 0%, #075e54 100%); border-color: #25d366;">💬 Consultar WhatsApp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Sección “El vino correcto para cada paladar” adaptada -->
+    <section id="personalizacion" class="section-container">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto 4rem auto;">
+            <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-primary); font-weight: 600; display: block; margin-bottom: 1rem;">El vino correcto para cada paladar</span>
+            <h2 class="section-title" style="margin-bottom: 1.5rem; text-align: center;">Personalización inteligente para cada cliente</h2>
+            <p style="color: var(--text-muted); font-size: 1.15rem; line-height: 1.7;">
+                Descorcha.IA descubre las preferencias de sabor de cada cliente mediante un quiz adaptativo y recomienda vinos disponibles en tu catálogo, ordenados por afinidad, ocasión, precio y estilo de consumo.
+            </p>
+        </div>
+    </section>
+
+    <!-- 4. Sección “Acerca de Descorcha.IA” -->
+    <section id="acerca-de" style="background: rgba(15, 10, 10, 0.6); padding: 7rem 0; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02);">
+        <div class="section-container" style="max-width: 900px; text-align: center;">
+            <h2 class="section-title">¿Qué es Descorcha.IA?</h2>
+            <p style="font-size: 1.2rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 2.5rem;">
+                Descorcha.IA es un motor de recomendación de vinos para vinotecas, bodegas, restaurantes y e-commerce. Se integra a tu experiencia digital para guiar al cliente en la elección del vino correcto, usando IA, preferencias de paladar, maridajes locales y disponibilidad real de stock.
+            </p>
+            <div class="glass-panel" style="padding: 2rem; border-color: var(--gold-muted); background: rgba(84, 12, 24, 0.08);">
+                <p style="font-size: 1.05rem; font-family: var(--font-serif); color: #fff; margin-bottom: 0; font-style: italic;">
+                    "No hacemos análisis químico de laboratorio. Nuestro enfoque combina perfiles sensoriales, señales de mercado, quiz adaptativo, reglas comerciales e inventario real del cliente para ofrecer una solución ágil, práctica y adaptable al comercio."
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Dato curioso / diferencial -->
+    <section class="section-container" style="text-align: center; padding-top: 6rem; padding-bottom: 6rem;">
+        <span style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--gold-primary); font-weight: 700; display: block; margin-bottom: 1rem;">Dato diferencial</span>
+        <h3 class="section-title" style="margin-bottom: 1.5rem; font-size: 2.2rem;">Descorcha.IA recomienda sobre tu inventario real</h3>
+        <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto 3rem auto; font-size: 1.1rem;">
+            A diferencia de los recomendadores tradicionales, Descorcha.IA no sugiere vinos agotados, inactivos o fuera de la intención real de precio y estilo del cliente.
+        </p>
+        
+        <div class="badge-container">
+            <span class="badge-pill">✓ Stock real</span>
+            <span class="badge-pill">✓ Filtro de precio</span>
+            <span class="badge-pill">✓ Maridaje local</span>
+            <span class="badge-pill">✓ Botón WhatsApp</span>
+            <span class="badge-pill">✓ Dashboard comercial</span>
+            <span class="badge-pill">✓ White-label</span>
+        </div>
+    </section>
+
+    <!-- 6. Cómo funciona (4 Pasos) -->
+    <section id="como-funciona" style="background: #090606; padding: 7rem 0; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02);">
+        <div class="section-container">
+            <h2 class="section-title">Cómo <span>funciona</span></h2>
+            <div class="steps-timeline">
+                <div class="glass-panel step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="card-title" style="color: var(--gold-primary);">Cargás tu catálogo</h3>
+                    <p class="card-desc">Subís un CSV con tus vinos, precios, stock, imágenes y links de compra. Descorcha.IA transforma tu catálogo en perfiles de recomendación listos para usar.</p>
+                </div>
+                <div class="glass-panel step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="card-title" style="color: var(--gold-primary);">El cliente responde</h3>
+                    <p class="card-desc">Un cuestionario breve interpreta preferencias cotidianas: sabores intensos o frescos, dulzor, cuerpo, ocasión, comida y presupuesto.</p>
+                </div>
+                <div class="glass-panel step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="card-title" style="color: var(--gold-primary);">Recomendación útil</h3>
+                    <p class="card-desc">Descorcha.IA muestra los vinos disponibles que mejor coinciden con su paladar, respetando stock, precio, estilo e intención.</p>
+                </div>
+                <div class="glass-panel step-card">
+                    <div class="step-number">4</div>
+                    <h3 class="card-title" style="color: var(--gold-primary);">Feedback inteligente</h3>
+                    <p class="card-desc">Cada click, consulta a WhatsApp, like o dislike alimenta tus métricas para conocer mejor a tus clientes y optimizar tu propuesta.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Resultado comercial -->
+    <section class="section-container">
+        <h2 class="section-title">El resultado: clientes más seguros, <span>recomendaciones más útiles</span> y más datos para vender mejor</h2>
+        <div class="features-grid">
+            <div class="glass-panel card-item">
+                <div class="card-icon">🤝</div>
+                <h3 class="card-title">Menos fricción</h3>
+                <p class="card-desc">El cliente elige con confianza el vino adecuado, eliminando la confusión típica al explorar catálogos extensos.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">💬</div>
+                <h3 class="card-title">Consultas calificadas</h3>
+                <p class="card-desc">Recibís leads a WhatsApp con pedidos específicos de vinos que ya pasaron por el filtro del paladar del usuario.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">📦</div>
+                <h3 class="card-title">Rotación de inventario</h3>
+                <p class="card-desc">Sugerí etiquetas de menor rotación que coinciden perfectamente con los gustos del consumidor.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">✓</div>
+                <h3 class="card-title">Stock alineado</h3>
+                <p class="card-desc">Evitá quejas y reclamos recomendando únicamente etiquetas disponibles y activas en tiempo real.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">⏰</div>
+                <h3 class="card-title">Asesoría 24/7</h3>
+                <p class="card-desc">Tu tienda online cuenta con un sommelier entrenado siempre activo, incluso fuera del horario comercial.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">📊</div>
+                <h3 class="card-title">Insights de mercado</h3>
+                <p class="card-desc">Obtenés datos agregados de las preferencias reales de cata de tus clientes para optimizar tus futuras compras.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Integraciones / puntos de contacto (Omnicanalidad) -->
+    <section id="puntos-contacto" style="background: rgba(10,6,6,0.5); padding: 7rem 0; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02);">
+        <div class="section-container">
+            <div style="text-align: center; max-width: 800px; margin: 0 auto 4rem auto;">
+                <h2 class="section-title" style="margin-bottom: 1.5rem;">Activá Descorcha.IA en todos <span>tus puntos de contacto</span></h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem;">
+                    Descorcha.IA puede usarse en tu web, tienda online, QR en góndola, carta de restaurante, sala de degustación, eventos, newsletters o campañas de WhatsApp.
+                </p>
+            </div>
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                <div class="glass-panel card-item" style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🌐</div>
+                    <h4 style="color: #fff;">E-commerce</h4>
+                </div>
+                <div class="glass-panel card-item" style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📱</div>
+                    <h4 style="color: #fff;">QR en góndola</h4>
+                </div>
+                <div class="glass-panel card-item" style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🍴</div>
+                    <h4 style="color: #fff;">Restaurantes</h4>
+                </div>
+                <div class="glass-panel card-item" style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📦</div>
+                    <h4 style="color: #fff;">Wine Clubs</h4>
+                </div>
+                <div class="glass-panel card-item" style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🎪</div>
+                    <h4 style="color: #fff;">Eventos</h4>
+                </div>
+                <div class="glass-panel card-item" style="text-align: center; padding: 1.5rem;">
+                    <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">💬</div>
+                    <h4 style="color: #fff;">WhatsApp</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. Con quién trabajamos -->
+    <section id="para-quien" class="section-container" style="padding-top: 6rem; padding-bottom: 6rem;">
+        <h2 class="section-title">Pensado para quienes <span>venden, recomiendan o elaboran vino</span></h2>
+        <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            <div class="glass-panel card-item">
+                <div class="card-icon">🏪</div>
+                <h3 class="card-title">Vinotecas</h3>
+                <p class="card-desc">Guía interactiva de compra digital y en góndola para acelerar la toma de decisiones.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">🍇</div>
+                <h3 class="card-title">Bodegas</h3>
+                <p class="card-desc">Recomendación de catálogo para turismo de cata, salas de degustación y venta directa.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">🍷</div>
+                <h3 class="card-title">Restaurantes</h3>
+                <p class="card-desc">Carta de vinos inteligente que asiste a comensales y sommelier según los platos ordenados.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">📬</div>
+                <h3 class="card-title">Wine Clubs</h3>
+                <p class="card-desc">Personalización de etiquetas para envíos de cajas mensuales según el paladar del socio.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">🛒</div>
+                <h3 class="card-title">E-commerce de vinos</h3>
+                <p class="card-desc">Asistente para mejorar la experiencia de compra y facilitar la conversión.</p>
+            </div>
+            <div class="glass-panel card-item">
+                <div class="card-icon">🚚</div>
+                <h3 class="card-title">Distribuidores</h3>
+                <p class="card-desc">Asesorar al retail sobre qué etiquetas podrían tener mayor afinidad con distintos perfiles de clientes.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. Soluciones B2B -->
+    <section id="soluciones" style="background: rgba(10,6,6,0.6); padding: 7rem 0; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02);">
+        <div class="section-container">
+            <h2 class="section-title">Nuestras <span>Soluciones B2B SaaS</span></h2>
+            <div class="solutions-grid">
+                <div class="glass-panel card-item">
+                    <h3 class="card-title" style="color: var(--gold-primary);">Descorcha.IA Recommender</h3>
+                    <p class="card-desc">Motor de recomendación personalizado para tu catálogo en base a afinidad sensorial y reglas de diversidad.</p>
+                </div>
+                <div class="glass-panel card-item">
+                    <h3 class="card-title" style="color: var(--gold-primary);">Descorcha.IA Commerce</h3>
+                    <p class="card-desc">Landing white-label interactiva con redirección de stock a e-commerce y leads de WhatsApp prearmados.</p>
+                </div>
+                <div class="glass-panel card-item">
+                    <h3 class="card-title" style="color: var(--gold-primary);">Descorcha.IA Insights</h3>
+                    <p class="card-desc">Dashboard analítico en tiempo real para entender el comportamiento de la demanda y afinidad de uvas por perfil.</p>
+                </div>
+                <div class="glass-panel card-item">
+                    <h3 class="card-title" style="color: var(--gold-primary);">Descorcha.IA QR</h3>
+                    <p class="card-desc">Experiencias de recomendación mediante códigos QR en mesas, góndolas físicas y cartas de restaurantes.</p>
+                </div>
+                <div class="glass-panel card-item">
+                    <h3 class="card-title" style="color: var(--gold-primary);">Descorcha.IA API</h3>
+                    <p class="card-desc">Integración modular del recomendador mediante APIs REST para integrarse en sitios web existentes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. Demo comercial -->
+    <section id="demos" class="section-container" style="text-align: center;">
+        <h2 class="section-title">Probalo con una <span>vinoteca demo</span></h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: -2rem auto 3rem auto; font-size: 1.1rem;">
+            Explorá la experiencia real del cliente final realizando el quiz, y el dashboard administrativo con los datos simulados recopilados.
+        </p>
+        
+        <div style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; max-width: 800px; margin: 0 auto;">
+            <div class="glass-panel" style="flex: 1; min-width: 280px; padding: 2.5rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">🍷</div>
+                <h3 class="card-title">Experiencia del Cliente</h3>
+                <p class="card-desc" style="margin-bottom: 1.5rem;">Quiz adaptativo de paladar, recomendaciones personalizadas y catálogo con precios en pesos.</p>
+                <a href="/c/demo_vinoteca" class="btn-primary" style="display: block;">Ver experiencia cliente</a>
+            </div>
+            <div class="glass-panel" style="flex: 1; min-width: 280px; padding: 2.5rem; text-align: center;">
+                <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+                <h3 class="card-title">Dashboard Comercial</h3>
+                <p class="card-desc" style="margin-bottom: 1.5rem;">Métricas de cata, tasa de finalización, vinos preferidos y clics a WhatsApp.</p>
+                <a href="/admin/demo_vinoteca/dashboard" class="btn-secondary" style="display: block;">Ver dashboard demo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. Testimonio placeholder -->
+    <section id="testimonios" style="background: rgba(10,6,6,0.5); padding: 6rem 0; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02);">
+        <div class="section-container" style="max-width: 800px; text-align: center;">
+            <h2 class="section-title">Caso demo: Vinoteca piloto</h2>
+            <p style="font-family: var(--font-serif); font-size: 1.3rem; color: #fff; line-height: 1.7; font-style: italic; margin-bottom: 2rem;">
+                "Estamos preparando pilotos con comercios de vino seleccionados en Argentina para medir el impacto de la recomendación adaptativa en las consultas cualificadas y la conversión en e-commerce."
+            </p>
+            <div style="font-size: 0.95rem; color: var(--gold-primary); font-weight: 600; letter-spacing: 1px;">
+                PRÓXIMAMENTE: HISTORIAS DE CLIENTES PILOTO
+            </div>
+        </div>
+    </section>
+
+    <!-- 13. Sección “Comenzá” -->
+    <section id="comenzar" class="section-container" style="max-width: 800px; text-align: center;">
+        <h2 class="section-title">Es rápido y simple empezar</h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 3rem;">
+            Te guiamos en una primera demo guiada para mostrarte cómo recomendaría Descorcha.IA sobre tu propio inventario:
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; text-align: left; max-width: 500px; margin: 0 auto;">
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</div>
+                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Compartís una muestra:</strong> Compartís una muestra de tu catálogo en un archivo básico de Excel o CSV.</p>
+            </div>
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</div>
+                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Configuramos tu experiencia:</strong> Configuramos tu experiencia demo personalizada white-label con tu marca.</p>
+            </div>
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</div>
+                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Probás recomendaciones:</strong> Probás recomendaciones con perfiles reales de consumidores de cata.</p>
+            </div>
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                <div style="background: var(--wine-primary); color: var(--gold-primary); font-weight: 700; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">4</div>
+                <p style="color: var(--text-main); font-size: 0.95rem;"><strong>Revisás métricas iniciales:</strong> Revisás métricas iniciales recopiladas a través de las interacciones.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 14. CTA final con fondo de viñedo y Formulario B2B Formspree Ajax -->
+    <section class="cta-final-vineyard" id="contacto">
+        <div class="section-container" style="padding-top: 8rem; padding-bottom: 8rem;">
+            <div class="glass-panel" style="padding: 4rem 3rem; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 4rem; align-items: start; background: rgba(18, 10, 10, 0.9); border: 1px solid var(--gold-muted);">
+                
+                <!-- Columna Izquierda: Mensaje y Acción alternativa -->
+                <div style="text-align: left;">
+                    <h2 style="font-family: var(--font-serif); font-size: 2.8rem; color: #fff; line-height: 1.2; margin-bottom: 1.5rem;">
+                        ¿Listo para conectar tus vinos con los clientes correctos?
+                    </h2>
+                    <p style="font-size: 1.15rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2.5rem;">
+                        Mostranos tu catálogo y te preparamos una demo guiada y personalizada de <strong>Descorcha.IA</strong> adaptada a tus etiquetas, precios y stock real.
+                    </p>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.06); padding-top: 2rem;">
+                        <span style="font-size: 0.88rem; color: var(--gold-primary); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; display: block; margin-bottom: 1rem;">Otras formas de probar</span>
+                        <a href="/c/demo_vinoteca" class="btn-secondary" style="display: inline-block;">Ver demo vinoteca online</a>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Formulario Ajax -->
+                <div>
+                    <!-- Contenedores de Estado de Formspree -->
+                    <div id="fs-success-msg" data-fs-success class="glass-panel" style="display: none; padding: 2.5rem; text-align: center; border-color: #81c784; background: rgba(129, 199, 132, 0.1); margin-bottom: 1.5rem;">
+                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎉</div>
+                        <h3 style="color: #81c784; font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 0.5rem;">¡Solicitud Recibida!</h3>
+                        <p style="color: var(--text-main); font-size: 0.95rem;">
+                            Gracias por tu interés. Nos pondremos en contacto muy pronto para configurar tu demo guiada.
+                        </p>
+                    </div>
+
+                    <div id="fs-error-msg" data-fs-error class="glass-panel" style="display: none; padding: 1.5rem; text-align: center; border-color: #e57373; background: rgba(229, 115, 115, 0.1); margin-bottom: 1.5rem; color: #e57373; font-size: 0.9rem;">
+                        Ocurrió un error. Por favor verifique los campos e intente de nuevo.
+                    </div>
+
+                    <form id="contact-form" action="https://formspree.io/f/xkolvgja" method="POST">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Nombre del Contacto / Comercio</label>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="Ej. Vinoteca Valle de Uco" required data-fs-field>
+                            <span data-fs-error="name" style="color: #e57373; font-size: 0.8rem; margin-top: 0.2rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Corporativo</label>
+                            <input type="email" id="email" name="email" class="form-input" placeholder="ejemplo@comercio.com" required data-fs-field>
+                            <span data-fs-error="email" style="color: #e57373; font-size: 0.8rem; margin-top: 0.2rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="whatsapp" class="form-label">WhatsApp / Teléfono de Contacto</label>
+                            <input type="tel" id="whatsapp" name="whatsapp" class="form-input" placeholder="+54 9..." required data-fs-field>
+                            <span data-fs-error="whatsapp" style="color: #e57373; font-size: 0.8rem; margin-top: 0.2rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="catalog_size" class="form-label">Tamaño Estimado del Catálogo</label>
+                            <select id="catalog_size" name="catalog_size" class="form-select" data-fs-field>
+                                <option value="Menos de 100 vinos">Menos de 100 etiquetas</option>
+                                <option value="100 a 500 vinos" selected>100 a 500 etiquetas</option>
+                                <option value="Más de 500 vinos">Más de 500 etiquetas</option>
+                            </select>
+                            <span data-fs-error="catalog_size" style="color: #e57373; font-size: 0.8rem; margin-top: 0.2rem;"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Mensaje / Consulta Adicional</label>
+                            <textarea id="message" name="message" class="form-textarea" rows="3" placeholder="Contanos sobre tu catálogo y necesidades..." required data-fs-field></textarea>
+                            <span data-fs-error="message" style="color: #e57373; font-size: 0.8rem; margin-top: 0.2rem;"></span>
+                        </div>
+
+                        <button type="submit" data-fs-submit-btn class="btn-primary" style="width: 100%; border-radius: 8px; margin-top: 1rem;">
+                            Reserva una demostración
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SDK e Inicialización de Formspree Ajax -->
+    <script>
+      window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+      formspree('initForm', { formElement: '#contact-form', formId: 'xkolvgja' });
+    </script>
+    <script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+    <!-- 15. Footer -->
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">
+                    <img src="{{ url_for('static', filename='img/commercial/logotipo-descorcha-ia.jpg') }}" alt="Descorcha.IA" style="height: 50px; vertical-align: middle; border-radius: 4px; margin-bottom: 1rem;">
+                </div>
+                <p class="footer-text">
+                    La plataforma SaaS de recomendación de vinos que ayuda a mejorar la experiencia de compra y conectar cada paladar con el catálogo real del comercio.
+                </p>
+                <p class="footer-text" style="margin-top: 0.5rem; font-weight: 500;">
+                    Descorcha.IA promueve el consumo responsable de bebidas alcohólicas. Prohibida su venta a menores de 18 años.
+                </p>
+            </div>
+            <div>
+                <h4 class="footer-title">Navegación</h4>
+                <ul class="footer-links">
+                    <li class="footer-link-item"><a href="#para-quien" class="footer-link">Con quién trabajamos</a></li>
+                    <li class="footer-link-item"><a href="#soluciones" class="footer-link">Soluciones B2B</a></li>
+                    <li class="footer-link-item"><a href="#como-funciona" class="footer-link">Cómo funciona</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Demos</h4>
+                <ul class="footer-links">
+                    <li class="footer-link-item"><a href="/c/demo_vinoteca" class="footer-link">Quiz Cliente</a></li>
+                    <li class="footer-link-item"><a href="/admin/demo_vinoteca/dashboard" class="footer-link">Dashboard Admin</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div>&copy; 2026 Descorcha.IA. Todos los derechos reservados.</div>
+            <div style="color: var(--gold-primary); font-style: italic; font-weight: 500; letter-spacing: 0.5px;">
+                Descorcha.IA promueve el consumo responsable de bebidas alcohólicas. Prohibida su venta a menores de 18 años. Beber con moderación.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

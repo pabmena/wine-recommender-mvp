@@ -1,0 +1,58 @@
+{
+    "timestamp": "2026-06-30T00:24:31.092977",
+    "verdict": "APTO",
+    "results": [
+        {
+            "flow_id": 1,
+            "flow_name": "Flujo 1: Para Mí + Principiante (Dulce y Suave)",
+            "passed": true,
+            "errors": [],
+            "recommendations_count": 15,
+            "top_recommendation": "Baja Tanga NV Sparkling Sec Cuvée Rosé Sparkling (Mendoza)"
+        },
+        {
+            "flow_id": 2,
+            "flow_name": "Flujo 2: Para Mí + Avanzado (Tinto Robusto y Complejo)",
+            "passed": true,
+            "errors": [],
+            "recommendations_count": 15,
+            "top_recommendation": "Trivento 2005 Golden Reserve Malbec (Mendoza)"
+        },
+        {
+            "flow_id": 3,
+            "flow_name": "Flujo 3: Para Regalar + No sé gustos (Tinto Versátil / Sin Extremos)",
+            "passed": true,
+            "errors": [],
+            "recommendations_count": 15,
+            "top_recommendation": "Finca Vides 2009 Torcidas Malbec (Mendoza)"
+        },
+        {
+            "flow_id": 4,
+            "flow_name": "Flujo 4: Ocasión Asado + Intermedio (Estructura y Fruto)",
+            "passed": true,
+            "errors": [],
+            "recommendations_count": 15,
+            "top_recommendation": "Domaine Bousquet 2016 Finca Lalande Malbec (Mendoza)"
+        },
+        {
+            "flow_id": 5,
+            "flow_name": "Flujo 5: Para Regalar + Espumante Original (Original / Premium)",
+            "passed": true,
+            "errors": [],
+            "recommendations_count": 14,
+            "top_recommendation": "Caligiore 2010 Pianissimo Rosé (Mendoza)"
+        }
+    ],
+    "tracking_validation": {
+        "session_id": "test-session-quiz-experience",
+        "total_events_tracked": 42,
+        "tracked_event_types": [
+            "wine_explanation_opened",
+            "result_tab_viewed",
+            "quiz_level_selected",
+            "quiz_answered",
+            "quiz_intent_selected",
+            "assistant_question_clicked"
+        ]
+    }
+}

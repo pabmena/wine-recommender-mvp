@@ -1,5 +1,6 @@
-# Mapeo de Gustos Cotidianos y Técnicos a Atributos de Vinos (19 Dimensiones)
+# Mapeo de Gustos Cotidianos, Técnicos e Intenciones en Descorcha.IA
 
+# Las 19 dimensiones del perfil sensorial de vinos
 ATTRIBUTE_COLUMNS = [
     'frutas_rojas',
     'frutas_negras',
@@ -22,293 +23,320 @@ ATTRIBUTE_COLUMNS = [
     'umami_y_otros'
 ]
 
-# Pregunta 1: Filtro de Calibración Adaptativa
-QUESTION_CALIBRATION = {
-    'id': 'conocimiento',
-    'text': '¿Cuánto sabes de vinos y qué lenguaje prefieres para el quiz?',
-    'type': 'single_choice',
-    'options': [
-        {'label': 'Prefiero preguntas de comidas y gustos cotidianos (Modelo Tastry)', 'value': 'principiante'},
-        {'label': 'Sé algo y prefiero preguntas técnicas sobre estilos de vino (Avanzado)', 'value': 'avanzado'}
-    ]
-}
-
-# Preguntas base según el perfil de conocimiento seleccionado
-QUESTIONS_BY_LEVEL = {
-    'principiante': [
-        {
-            'id': 'cafe_pref',
-            'text': 'Cuando tomas café o té negro, ¿cómo lo prefieres?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Suave, con bastante leche y azúcar', 'value': 'A'},
-                {'label': 'Equilibrado, con un toque moderado de azúcar o leche', 'value': 'B'},
-                {'label': 'Intenso, negro y completamente sin azúcar', 'value': 'C'},
-                {'label': 'No tomo café ni té negro', 'value': 'D'}
-            ]
-        },
-        {
-            'id': 'chocolate_pref',
-            'text': '¿Qué tipo de chocolate disfrutas más?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Chocolate blanco o muy dulce y cremoso', 'value': 'A'},
-                {'label': 'Chocolate con leche tradicional', 'value': 'B'},
-                {'label': 'Chocolate negro amargo (70% de cacao o más)', 'value': 'C'},
-                {'label': 'No me gusta o no consumo chocolate', 'value': 'D'}
-            ]
-        },
-        {
-            'id': 'citricos_pref',
-            'text': '¿Qué tanto disfrutas de los sabores cítricos intensos (como el limón exprimido, lima o pomelo)?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Poco o nada, los encuentro demasiado ácidos o ásperos', 'value': 'A'},
-                {'label': 'Moderadamente, me resultan agradables y frescos', 'value': 'B'},
-                {'label': 'Mucho, me encantan las sensaciones ácidas y vibrantes', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'asado_pref',
-            'text': '¿Te gusta el olor y sabor a humo de leña, fogatas, barbacoa o asado?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Evito las cosas ahumadas o con notas quemadas', 'value': 'A'},
-                {'label': 'Moderado, me resultan indiferentes o agradables con sutileza', 'value': 'B'},
-                {'label': 'Mucho, me fascinan el aroma a leña y los sabores ahumados intensos', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'hongos_pref',
-            'text': '¿Qué opinas de los hongos frescos, trufas, el olor a tierra mojada o bosque húmedo?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'No me gustan los hongos ni los aromas terrosos', 'value': 'A'},
-                {'label': 'Moderado, los consumo si están bien integrados', 'value': 'B'},
-                {'label': 'Me fascinan los hongos, trufas y aromas a bosque y tierra mojada', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'manzana_pref',
-            'text': 'Cuando comes manzanas, ¿cuál prefieres?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Manzana roja, dulce, suave y arenosa (Baja acidez)', 'value': 'A'},
-                {'label': 'Me da igual o me gustan ambas por igual', 'value': 'B'},
-                {'label': 'Manzana verde, ácida, crujiente y vibrante (Alta acidez)', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'especias_pref',
-            'text': '¿Qué tal te llevas con la pimienta negra molida o las especias fuertes en las comidas?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Las evito por completo, prefiero comidas suaves', 'value': 'A'},
-                {'label': 'Moderado, tolero un toque de pimienta o pimentón', 'value': 'B'},
-                {'label': 'Me encantan la pimienta negra molida y las comidas bien especiadas', 'value': 'C'}
-            ]
-        }
-    ],
-    'avanzado': [
-        {
-            'id': 'cuerpo_tecnico',
-            'text': '¿Qué nivel de cuerpo y volumen prefieres en boca en un vino?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Cuerpo ligero, fluido y fácil de tomar', 'value': 'A'},
-                {'label': 'Cuerpo medio, equilibrado y con buena presencia', 'value': 'B'},
-                {'label': 'Vinos con mucho cuerpo, robustos y estructurados', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'madera_tecnico',
-            'text': '¿Cuál es tu preferencia respecto al paso por barricas de roble (madera)?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Vinos jóvenes y frutados sin madera', 'value': 'A'},
-                {'label': 'Presencia sutil de madera, que acompañe a la fruta', 'value': 'B'},
-                {'label': 'Crianza prolongada con notas de vainilla, cacao, coco o ahumados', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'taninos_tecnico',
-            'text': '¿Cómo te gusta la sensación táctil y astringencia de los taninos?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Taninos muy suaves, redondos y pulidos', 'value': 'A'},
-                {'label': 'Taninos presentes que den estructura sin ser agresivos', 'value': 'B'},
-                {'label': 'Taninos firmes, potentes y bien estructurados', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'acidez_tecnico',
-            'text': '¿Qué perfil de acidez buscas en un vino?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Acidez baja, que sea sedoso y amable', 'value': 'A'},
-                {'label': 'Acidez media, fresca y equilibrada', 'value': 'B'},
-                {'label': 'Acidez alta, muy fresca, crujiente y vibrante', 'value': 'C'}
-            ]
-        },
-        {
-            'id': 'dulzor_tecnico',
-            'text': '¿Cuál es tu nivel de azúcar residual preferido en el vino?',
-            'type': 'single_choice',
-            'options': [
-                {'label': 'Completamente seco (sin rastros dulces)', 'value': 'A'},
-                {'label': 'Abocado o semi-seco (con una leve sensación amable)', 'value': 'B'},
-                {'label': 'Dulce natural o de cosecha tardía', 'value': 'C'}
-            ]
-        }
-    ]
-}
-
-# Preguntas de Refinamiento Extra (para baja confianza)
-QUESTIONS_REFINEMENT = {
-    'acidez': {
-        'id': 'ref_acidez',
-        'text': 'Cuando consumes frutas frescas, ¿prefieres una manzana verde ácida y crocante o una roja dulce y arenosa?',
+# 1. Preguntas Iniciales de Flujo B2B
+QUESTIONS_INITIAL = {
+    'intencion': {
+        'id': 'intencion',
+        'text': '¿Para quién es el vino que estás buscando?',
         'type': 'single_choice',
+        'emoji': '🎁',
         'options': [
-            {'label': 'Definitivamente la roja, dulce y suave (Prefiero baja acidez)', 'value': 'A'},
-            {'label': 'Me es indiferente', 'value': 'B'},
-            {'label': 'La verde, bien ácida y refrescante (Prefiero alta acidez)', 'value': 'C'}
+            {'label': 'Para mí', 'value': 'para_mi'},
+            {'label': 'Para hacer un regalo', 'value': 'para_regalar'},
+            {'label': 'Para compartir en una comida o reunión', 'value': 'comida'},
+            {'label': 'Para un evento o regalo empresarial', 'value': 'evento'}
         ]
     },
-    'taninos': {
-        'id': 'ref_taninos',
-        'text': '¿Disfrutas del sabor amargo y seco del mate amargo, el té negro fuerte o el agua tónica?',
+    'conocimiento': {
+        'id': 'conocimiento',
+        'text': '¿Cómo describirías tu nivel de conocimiento sobre vinos?',
         'type': 'single_choice',
+        'emoji': '🍷',
         'options': [
-            {'label': 'No, los evito por completo (Prefiero vinos sin astringencia)', 'value': 'A'},
-            {'label': 'Me gustan con moderación', 'value': 'B'},
-            {'label': 'Sí, me encantan esos sabores amargos y secos (Prefiero taninos firmes)', 'value': 'C'}
+            {'label': 'Principiante (Prefiero sabores sencillos y cotidianos)', 'value': 'principiante'},
+            {'label': 'Intermedio (Conozco algunas variedades y estilos comunes)', 'value': 'intermedio'},
+            {'label': 'Avanzado (Disfruto detalles técnicos como barrica, acidez o taninos)', 'value': 'avanzado'}
         ]
     },
-    'cuerpo': {
-        'id': 'ref_cuerpo',
-        'text': 'En tus bebidas en general, ¿prefieres texturas ligeras como un agua frutal o densas y con peso en boca?',
+    'presupuesto': {
+        'id': 'presupuesto',
+        'text': '¿Qué presupuesto aproximado tenés por botella?',
         'type': 'single_choice',
+        'emoji': '💵',
         'options': [
-            {'label': 'Ligeras, refrescantes y rápidas de beber (Vino ligero)', 'value': 'A'},
-            {'label': 'Neutras', 'value': 'B'},
-            {'label': 'Con buena textura, densas y persistentes (Vino con cuerpo)', 'value': 'C'}
-        ]
-    },
-    'madera_y_otros': {
-        'id': 'ref_madera',
-        'text': '¿Te atraen los aromas de coco tostado, fogata de leña, vainilla dulce o el olor a cuero?',
-        'type': 'single_choice',
-        'options': [
-            {'label': 'Prefiero aromas puramente limpios y afrutados (Vinos jóvenes)', 'value': 'A'},
-            {'label': 'Me resultan agradables en baja cantidad', 'value': 'B'},
-            {'label': 'Me fascinan, me parecen aromas complejos y profundos (Vinos con madera)', 'value': 'C'}
-        ]
-    },
-    'dulzor': {
-        'id': 'ref_dulzor',
-        'text': '¿Qué tan fanático eres de los postres muy dulces como el dulce de leche o flan con caramelo?',
-        'type': 'single_choice',
-        'options': [
-            {'label': 'No me gustan las cosas muy empalagosas (Vinos muy secos)', 'value': 'A'},
-            {'label': 'Me gustan con moderación o equilibrados', 'value': 'B'},
-            {'label': 'Me encantan las cosas bien dulces (Vinos dulces)', 'value': 'C'}
+            {'label': 'Económico (Hasta $15.000)', 'value': 'bajo'},
+            {'label': 'Medio ($15.000 a $35.000)', 'value': 'medio'},
+            {'label': 'Premium (Más de $35.000)', 'value': 'alto'}
         ]
     }
 }
 
-# Diccionario de pesos para actualizar el perfil base (inicializado en 0.5)
-TASTE_MAPPING = {
-    # Nivel Principiante (Modelo Tastry)
-    'cafe_pref': {
-        'A': {'taninos': -0.3, 'cuerpo': -0.2, 'dulzor': 0.2, 'finalizacion': -0.1},
-        'B': {},
-        'C': {'taninos': 0.4, 'cuerpo': 0.3, 'dulzor': -0.3, 'finalizacion': 0.3},
-        'D': {'taninos': -0.4, 'cuerpo': -0.2, 'dulzor': 0.1}
+# 2. Preguntas del Flujo Especial "Para Regalar"
+QUESTIONS_REGALO = [
+    {
+        'id': 'regalo_conoce_gustos',
+        'text': '¿Conocés los gustos de la persona que va a recibir el vino?',
+        'type': 'single_choice',
+        'emoji': '🤔',
+        'options': [
+            {'label': 'Sí, sé qué estilos prefiere', 'value': 'si'},
+            {'label': 'No, prefiero ir a lo seguro y confiable', 'value': 'no'}
+        ]
     },
-    'chocolate_pref': {
-        'A': {'dulzor': 0.4, 'taninos': -0.3, 'cuerpo': -0.2},
-        'B': {'dulzor': 0.1, 'taninos': -0.1},
-        'C': {'dulzor': -0.3, 'taninos': 0.4, 'cuerpo': 0.3, 'finalizacion': 0.2},
-        'D': {}
+    {
+        'id': 'regalo_color_pref',
+        'text': '¿Prefiere algún tipo de vino en particular?',
+        'type': 'single_choice',
+        'emoji': '🥂',
+        'options': [
+            {'label': 'Tinto', 'value': 'tinto'},
+            {'label': 'Blanco', 'value': 'blanco'},
+            {'label': 'Rosado o Espumante', 'value': 'rosado_espumante'},
+            {'label': 'No sé, prefiero que decida la IA', 'value': 'no_se'}
+        ]
     },
-    'citricos_pref': {
-        'A': {'acidez': -0.4, 'frutas_cítricas': -0.3},
-        'B': {},
-        'C': {'acidez': 0.4, 'frutas_cítricas': 0.4}
+    {
+        'id': 'regalo_conocimiento_destinatario',
+        'text': '¿Cuál es el nivel de conocimiento del destinatario?',
+        'type': 'single_choice',
+        'emoji': '🎓',
+        'options': [
+            {'label': 'Principiante', 'value': 'principiante'},
+            {'label': 'Intermedio', 'value': 'intermedio'},
+            {'label': 'Avanzado', 'value': 'avanzado'},
+            {'label': 'No estoy seguro', 'value': 'no_se'}
+        ]
     },
-    'asado_pref': {
-        'A': {'madera_y_otros': -0.4, 'notas_terrosas': -0.2},
-        'B': {},
-        'C': {'madera_y_otros': 0.5, 'notas_terrosas': 0.2, 'taninos': 0.2, 'cuerpo': 0.3}
+    {
+        'id': 'regalo_ocasion',
+        'text': '¿Cuál es el motivo de este regalo?',
+        'type': 'single_choice',
+        'emoji': '🎂',
+        'options': [
+            {'label': 'Cumpleaños o Aniversario', 'value': 'cumple'},
+            {'label': 'Agradecimiento o Cortesía', 'value': 'agradecimiento'},
+            {'label': 'Regalo empresarial o institucional', 'value': 'empresa'},
+            {'label': 'Celebración, cena o brindis informal', 'value': 'celebracion'}
+        ]
     },
-    'hongos_pref': {
-        'A': {'notas_terrosas': -0.4, 'umami_y_otros': -0.3},
-        'B': {},
-        'C': {'notas_terrosas': 0.5, 'umami_y_otros': 0.4, 'cuerpo': 0.2}
+    {
+        'id': 'regalo_estilo_etiqueta',
+        'text': '¿Qué tipo de etiqueta estás buscando para el regalo?',
+        'type': 'single_choice',
+        'emoji': '🏷️',
+        'options': [
+            {'label': 'Una etiqueta clásica, segura y muy reconocida', 'value': 'clasico'},
+            {'label': 'Algo original, boutique o con historia para contar', 'value': 'original'}
+        ]
     },
-    'manzana_pref': {
-        'A': {'acidez': -0.4, 'dulzor': 0.2},
-        'B': {},
-        'C': {'acidez': 0.4, 'dulzor': -0.2}
-    },
-    'especias_pref': {
-        'A': {'especias': -0.4, 'alcohol': -0.2},
-        'B': {},
-        'C': {'especias': 0.5, 'alcohol': 0.3, 'taninos': 0.2}
-    },
+    {
+        'id': 'regalo_presupuesto',
+        'text': '¿Qué presupuesto tenés pensado para el regalo?',
+        'type': 'single_choice',
+        'emoji': '💵',
+        'options': [
+            {'label': 'Económico (Hasta $15.000)', 'value': 'bajo'},
+            {'label': 'Medio ($15.000 a $35.000)', 'value': 'medio'},
+            {'label': 'Premium (Más de $35.000)', 'value': 'alto'}
+        ]
+    }
+]
+
+# 3. Preguntas Sensoriales por Nivel (Tastry-like con 3 respuestas emocionales)
+QUESTIONS_SENSORIALES = {
+    'principiante': [
+        {
+            'id': 'cafe_intenso',
+            'text': '¿Qué tanto te gusta el café solo, negro y sin azúcar (intenso)?',
+            'emoji': '☕',
+            'attribute_impact': {
+                'taninos': 0.4,
+                'cuerpo': 0.3,
+                'dulzor': -0.3,
+                'finalizacion': 0.2
+            }
+        },
+        {
+            'id': 'chocolate_amargo',
+            'text': '¿Disfrutas del chocolate negro amargo (70% de cacao o más)?',
+            'emoji': '🍫',
+            'attribute_impact': {
+                'taninos': 0.4,
+                'cuerpo': 0.2,
+                'dulzor': -0.2
+            }
+        },
+        {
+            'id': 'dulce_leche',
+            'text': '¿Te encantan los postres muy dulces como el dulce de leche o caramelo?',
+            'emoji': '🍮',
+            'attribute_impact': {
+                'dulzor': 0.5,
+                'acidez': -0.3
+            }
+        },
+        {
+            'id': 'citricos_pomelo',
+            'text': '¿Qué tanto disfrutas del pomelo rosado o la acidez del limón exprimido?',
+            'emoji': '🍋',
+            'attribute_impact': {
+                'acidez': 0.4,
+                'frutas_cítricas': 0.4
+            }
+        },
+        {
+            'id': 'asado_humo',
+            'text': '¿Te fascina el aroma a leña, humo de fogata o asado a la parrilla?',
+            'emoji': '🍖',
+            'attribute_impact': {
+                'madera_y_otros': 0.5,
+                'notas_terrosas': 0.2,
+                'cuerpo': 0.2
+            }
+        }
+    ],
     
-    # Nivel Avanzado/Técnico
-    'cuerpo_tecnico': {
-        'A': {'cuerpo': -0.4, 'finalizacion': -0.2, 'alcohol': -0.2},
-        'B': {'cuerpo': 0.0},
-        'C': {'cuerpo': 0.4, 'finalizacion': 0.3, 'alcohol': 0.2}
-    },
-    'madera_tecnico': {
-        'A': {'madera_y_otros': -0.4, 'notas_terrosas': -0.2, 'notas_florales': 0.2},
-        'B': {'madera_y_otros': 0.1},
-        'C': {'madera_y_otros': 0.5, 'notas_terrosas': 0.3}
-    },
-    'taninos_tecnico': {
-        'A': {'taninos': -0.4, 'cuerpo': -0.1},
-        'B': {'taninos': 0.1},
-        'C': {'taninos': 0.4, 'cuerpo': 0.2}
-    },
-    'acidez_tecnico': {
-        'A': {'acidez': -0.4},
-        'B': {'acidez': 0.0},
-        'C': {'acidez': 0.4}
-    },
-    'dulzor_tecnico': {
-        'A': {'dulzor': -0.4},
-        'B': {'dulzor': 0.1},
-        'C': {'dulzor': 0.5}
-    },
+    'intermedio': [
+        {
+            'id': 'provoleta_leña',
+            'text': '¿Te gusta la provoleta dorada a la chapa con hierbas frescas?',
+            'emoji': '🧀',
+            'attribute_impact': {
+                'cuerpo': 0.3,
+                'notas_herbales_frescas': 0.3,
+                'umami_y_otros': 0.2
+            }
+        },
+        {
+            'id': 'pastas_tuco',
+            'text': '¿Qué opinas de las pastas de domingo con tuco y pesto intenso?',
+            'emoji': '🍝',
+            'attribute_impact': {
+                'acidez': 0.3,
+                'notas_herbales_frescas': 0.3,
+                'especias': 0.2
+            }
+        },
+        {
+            'id': 'picada_fiambres',
+            'text': '¿Disfrutas de una picada con salamines, quesos duros y aceitunas?',
+            'emoji': '🥖',
+            'attribute_impact': {
+                'taninos': 0.3,
+                'cuerpo': 0.3,
+                'alcohol': 0.2
+            }
+        },
+        {
+            'id': 'frutos_rojos_patagonia',
+            'text': '¿Te encantan los frutos rojos de la Patagonia (moras, frambuesas)?',
+            'emoji': '🍓',
+            'attribute_impact': {
+                'frutas_rojas': 0.5,
+                'frutas_negras': 0.3
+            }
+        },
+        {
+            'id': 'yerba_mate_intensa',
+            'text': '¿Te gusta tomar el mate amargo y bien cebado (yerba intensa)?',
+            'emoji': '🧉',
+            'attribute_impact': {
+                'notas_herbales_secas': 0.4,
+                'taninos': 0.3,
+                'acidez': 0.2
+            }
+        }
+    ],
     
-    # Refinamientos
-    'ref_acidez': {
-        'A': {'acidez': -0.3, 'frutas_cítricas': -0.2},
-        'B': {},
-        'C': {'acidez': 0.3, 'frutas_cítricas': 0.2}
+    'avanzado': [
+        {
+            'id': 'cuerpo_robusto_tecnico',
+            'text': '¿Preferís vinos con cuerpo robusto, pesado y estructurados en boca?',
+            'emoji': '🏺',
+            'attribute_impact': {
+                'cuerpo': 0.5,
+                'finalizacion': 0.3,
+                'alcohol': 0.2
+            }
+        },
+        {
+            'id': 'madera_barrica_tecnico',
+            'text': '¿Te gusta la crianza prolongada en barricas de roble (vainilla, cacao)?',
+            'emoji': '🪵',
+            'attribute_impact': {
+                'madera_y_otros': 0.5,
+                'notas_terrosas': 0.2
+            }
+        },
+        {
+            'id': 'taninos_firmes_tecnico',
+            'text': '¿Disfrutás los taninos firmes, potentes y bien astringentes?',
+            'emoji': '🍇',
+            'attribute_impact': {
+                'taninos': 0.5,
+                'cuerpo': 0.2
+            }
+        },
+        {
+            'id': 'acidez_vibrante_tecnico',
+            'text': '¿Buscás acidez crujiente, refrescante y bien alta en boca?',
+            'emoji': '❄️',
+            'attribute_impact': {
+                'acidez': 0.5,
+                'frutas_cítricas': 0.2
+            }
+        },
+        {
+            'id': 'dulzor_residual_tecnico',
+            'text': '¿Preferís que el vino tenga cierta sensación dulce o azúcar residual?',
+            'emoji': '🍯',
+            'attribute_impact': {
+                'dulzor': 0.5
+            }
+        },
+        {
+            'id': 'region_uco_tecnico',
+            'text': '¿Preferís la tipicidad mineral y herbal del Valle de Uco a otras regiones?',
+            'emoji': '🏔️',
+            'attribute_impact': {
+                'notas_terrosas': 0.3,
+                'notas_herbales_frescas': 0.3,
+                'acidez': 0.2
+            }
+        }
+    ]
+}
+
+# 4. Preguntas de Refinamiento Extra (para baja confianza)
+QUESTIONS_REFINEMENT = {
+    'acidez': {
+        'id': 'ref_acidez',
+        'text': '¿Disfrutás la manzana verde ácida y bien crujiente?',
+        'emoji': '🍏',
+        'attribute_impact': {
+            'acidez': 0.3
+        }
     },
-    'ref_taninos': {
-        'A': {'taninos': -0.3},
-        'B': {},
-        'C': {'taninos': 0.3}
+    'taninos': {
+        'id': 'ref_taninos',
+        'text': '¿Disfrutás el sabor de las bebidas amargas como el agua tónica?',
+        'emoji': '🥤',
+        'attribute_impact': {
+            'taninos': 0.3
+        }
     },
-    'ref_cuerpo': {
-        'A': {'cuerpo': -0.3, 'finalizacion': -0.1},
-        'B': {},
-        'C': {'cuerpo': 0.3, 'finalizacion': 0.2}
+    'cuerpo': {
+        'id': 'ref_cuerpo',
+        'text': 'En bebidas, ¿preferís texturas con peso e intensidad en boca?',
+        'emoji': '🥛',
+        'attribute_impact': {
+            'cuerpo': 0.3
+        }
     },
-    'ref_madera': {
-        'A': {'madera_y_otros': -0.3, 'notas_terrosas': -0.1},
-        'B': {},
-        'C': {'madera_y_otros': 0.3, 'notas_terrosas': 0.2}
+    'madera_y_otros': {
+        'id': 'ref_madera',
+        'text': '¿Te agrada el aroma a coco tostado o tabaco en las cosas?',
+        'emoji': '🥥',
+        'attribute_impact': {
+            'madera_y_otros': 0.3
+        }
     },
-    'ref_dulzor': {
-        'A': {'dulzor': -0.3},
-        'B': {},
-        'C': {'dulzor': 0.3}
+    'dulzor': {
+        'id': 'ref_dulzor',
+        'text': '¿Disfrutás del sabor de la miel pura o el flan con caramelo?',
+        'emoji': '🍯',
+        'attribute_impact': {
+            'dulzor': 0.3
+        }
     }
 }

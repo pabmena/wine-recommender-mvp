@@ -1,70 +1,194 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2 style="margin-bottom: 1.5rem;">Conociendo tu Paladar</h2>
-    
-    <!-- Barra de progreso premium estilo Tastry -->
+    <!-- Encabezado del local si corresponde -->
+    {% if client %}
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <img src="{{ client.logo_url }}" alt="{{ client.client_name }}" style="max-height: 48px; margin-bottom: 0.4rem; border-radius: 6px; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));">
+            <div style="font-size: 0.85rem; color: var(--gold-primary); font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">{{ client.client_name }}</div>
+        </div>
+    {% endif %}
+
+    <!-- Barra de progreso premium dorada -->
     {% set progress = 10 %}
     {% if total_steps == "Refinamiento" %}
-        {% set progress = 85 %}
+        {% set progress = 90 %}
     {% elif total_steps and total_steps|int > 0 %}
         {% set progress = (step_num|int / total_steps|int) * 100 %}
     {% endif %}
     
-    <div style="max-width: 700px; margin: 0 auto 2.5rem auto;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-primary); font-weight: 600; margin-bottom: 0.5rem;">
+    <div style="max-width: 650px; margin: 0 auto 2.5rem auto; padding: 0 1rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--gold-primary); font-weight: 600; margin-bottom: 0.6rem;">
             <span>
                 {% if total_steps == "Refinamiento" %}
-                    Fase de Refinamiento (Paso {{ step_num }})
+                    Ajuste Fino de Perfil
                 {% else %}
-                    Pregunta {{ step_num }} de {{ total_steps }}
+                    Paso {{ step_num }} de {{ total_steps }}
                 {% endif %}
             </span>
-            <span>{{ progress|int }}% Completado</span>
+            <span>{{ progress|int }}% completado</span>
         </div>
-        <div class="attribute-bar-bg" style="height: 6px; width: 100%; border-radius: 3px; background: rgba(255, 255, 255, 0.05); overflow: hidden;">
-            <div class="attribute-bar-fill" style="width: {{ progress }}%; height: 100%; background: linear-gradient(90deg, var(--wine-primary) 0%, var(--gold-primary) 100%); transition: width 0.4s ease;"></div>
+        <div style="height: 5px; width: 100%; border-radius: 10px; background: rgba(255, 255, 255, 0.05); overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.02);">
+            <div style="width: {{ progress }}%; height: 100%; background: linear-gradient(90deg, #cfab34 0%, #ffdf7a 100%); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(207, 171, 52, 0.4);"></div>
         </div>
-        <div style="text-align: center; font-size: 0.95rem; color: var(--text-muted); margin-top: 0.8rem; font-style: italic;">
+        <div style="text-align: center; font-size: 0.88rem; color: rgba(255,255,255,0.45); margin-top: 0.8rem; font-family: var(--font-sans);">
             {{ confidence_text }}
         </div>
     </div>
     
-    <form id="quiz-form" method="POST" action="{{ url_for('quiz') }}">
-        <input type="hidden" name="question_id" value="{{ question.id }}">
-        
-        <div class="question-card" style="max-width: 700px; margin: 0 auto 3rem auto; padding: 2.5rem 2rem;">
-            <h3 class="question-text" style="text-align: center; margin-bottom: 2.5rem; font-size: 1.7rem; font-weight: 400; line-height: 1.4;">
-                {{ question.text }}
-            </h3>
+    <!-- Card central con glassmorphism -->
+    <div style="max-width: 650px; margin: 0 auto; padding: 0 1rem;">
+        <div class="glass-panel" style="background: rgba(18, 10, 10, 0.75); border: 1px solid rgba(207, 171, 52, 0.2); border-radius: 20px; padding: 3rem 2.5rem; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: relative; overflow: hidden;">
             
-            <div class="options-container" style="gap: 1.2rem;">
-                {% for option in question.options %}
-                    <label class="option-label" style="position: relative; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; padding: 1.2rem 1.6rem; border-radius: 12px; border: 1.5px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); cursor: pointer;">
-                        <input type="radio" name="response_val" value="{{ option.value }}" required 
-                               style="margin-right: 1.2rem; cursor: pointer; accent-color: var(--gold-primary);"
-                               onclick="handleOptionSelect(this)">
-                        <span style="font-size: 1.1rem; color: var(--text-light); font-weight: 400;">{{ option.label }}</span>
-                    </label>
-                {% endfor %}
+            <!-- Glow background decorativo detrás del emoji -->
+            <div style="position: absolute; top: -50px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; background: radial-gradient(circle, rgba(207,171,52,0.08) 0%, rgba(0,0,0,0) 70%); pointer-events: none;"></div>
+
+            <form id="quiz-form" method="POST" action="{{ url_for('quiz') }}">
+                <input type="hidden" name="question_id" value="{{ question.id }}">
+
+                <!-- Imagen grande o fallback de emoji grande -->
+                <div style="font-size: 4.8rem; margin-bottom: 2rem; display: inline-block; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4)); animation: float 3s ease-in-out infinite;">
+                    {{ question.emoji or '🍷' }}
+                </div>
+
+                <h3 style="font-family: var(--font-serif); font-size: 1.85rem; color: #fff; font-weight: 400; line-height: 1.35; margin-bottom: 3rem; min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                    {{ question.text }}
+                </h3>
+                
+                <!-- Contenedor de Opciones -->
+                {% if question.options %}
+                    <!-- Modo A: Preguntas base de opción única (Intención, Conocimiento, Regalo) -->
+                    <div style="display: flex; flex-direction: column; gap: 1rem; text-align: left;">
+                        {% for option in question.options %}
+                            <label class="option-card" style="display: flex; align-items: center; padding: 1.1rem 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: rgba(255,255,255,0.02); cursor: pointer; transition: all 0.2s ease;">
+                                <input type="radio" name="response_val" value="{{ option.value }}" required 
+                                       style="display: none;"
+                                       onclick="handleChoiceSelect(this)">
+                                <div class="custom-radio" style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); margin-right: 1.2rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #cfab34; transform: scale(0); transition: transform 0.2s;"></div>
+                                </div>
+                                <span style="font-size: 1.05rem; color: rgba(255,255,255,0.9); font-weight: 400;">{{ option.label }}</span>
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <!-- Modo B: Preguntas sensoriales de Tastry (😖 No es para mí, 😐 Me da igual, 😍 Me encanta) -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem;">
+                        
+                        <button type="button" class="btn-emotion" onclick="submitEmotion('no_gusta')" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 1.5rem 0.5rem; color: #fff; cursor: pointer; transition: all 0.25s ease;">
+                            <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">😖</div>
+                            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">No es para mí</div>
+                        </button>
+                        
+                        <button type="button" class="btn-emotion" onclick="submitEmotion('neutro')" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 1.5rem 0.5rem; color: #fff; cursor: pointer; transition: all 0.25s ease;">
+                            <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">😐</div>
+                            <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Me da igual</div>
+                        </button>
+                        
+                        <button type="button" class="btn-emotion" onclick="submitEmotion('gusta')" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(207,171,52,0.15); border-radius: 16px; padding: 1.5rem 0.5rem; color: #fff; cursor: pointer; transition: all 0.25s ease;">
+                            <div style="font-size: 2.2rem; margin-bottom: 0.6rem;">😍</div>
+                            <div style="font-size: 0.85rem; color: var(--gold-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Me encanta</div>
+                        </button>
+                        
+                        <!-- Input oculto para recibir el valor de la emoción en la sumisión -->
+                        <input type="hidden" id="emotion-input" name="response_val" value="">
+                    </div>
+                {% endif %}
+            </form>
+
+            <!-- Ayuda / Tooltip de Tastry -->
+            <div style="margin-top: 3.5rem; font-size: 0.88rem; color: rgba(255,255,255,0.35); font-style: italic; border-top: 1px solid rgba(255,255,255,0.04); padding-top: 1.5rem;">
+                💡 No hay respuestas correctas. Respondé intuitivamente según tus gustos personales.
             </div>
+
         </div>
-    </form>
+
+        <!-- Botones de Navegación Abajo de la Card -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding: 0 0.5rem;">
+            <!-- Botón Anterior -->
+            {% if step_num|int > 1 or total_steps == "Refinamiento" %}
+                <a href="/quiz/back" style="display: inline-flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; font-weight: 500;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Volver a la pregunta anterior
+                </a>
+            {% else %}
+                <div></div>
+            {% endif %}
+            
+            <a href="/quiz?reset=1" style="color: rgba(255, 229, 229, 0.4); text-decoration: none; font-size: 0.9rem; transition: color 0.2s;" onclick="return confirm('¿Seguro querés reiniciar el quiz?')">Reiniciar quiz</a>
+        </div>
+    </div>
+
+    <!-- Reglas de Estilos y Animaciones Auxiliares -->
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Hover de tarjetas de opción */
+        .option-card:hover {
+            border-color: rgba(207, 171, 52, 0.4) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .option-card input:checked + .custom-radio {
+            border-color: #cfab34 !important;
+        }
+
+        .option-card input:checked + .custom-radio div {
+            transform: scale(1) !important;
+        }
+
+        .option-card:has(input:checked) {
+            border-color: #cfab34 !important;
+            background: rgba(207, 171, 52, 0.08) !important;
+            box-shadow: 0 0 15px rgba(207, 171, 52, 0.1);
+        }
+
+        /* Hover de emociones */
+        .btn-emotion:hover {
+            border-color: #cfab34 !important;
+            background: rgba(207, 171, 52, 0.06) !important;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .btn-emotion:active {
+            transform: translateY(1px);
+        }
+    </style>
 
     <script>
-        function handleOptionSelect(radioInput) {
-            // Remarcar visualmente la opción seleccionada antes de enviar
-            const parentLabel = radioInput.closest('label');
+        // Función para enviar las opciones de botones B2B normales
+        function handleChoiceSelect(radioInput) {
+            const parentLabel = radioInput.closest('.option-card');
             if (parentLabel) {
-                parentLabel.style.borderColor = 'var(--gold-primary)';
-                parentLabel.style.background = 'rgba(88, 24, 31, 0.25)';
-                parentLabel.style.boxShadow = '0 0 15px rgba(212, 175, 55, 0.15)';
+                parentLabel.style.borderColor = '#cfab34';
+                parentLabel.style.background = 'rgba(207, 171, 52, 0.12)';
             }
             
-            // Retardo de 250ms para que el usuario perciba la selección
             setTimeout(() => {
                 document.getElementById('quiz-form').submit();
-            }, 250);
+            }, 300);
+        }
+
+        // Función para enviar la emoción en caliente (Tastry-like)
+        function submitEmotion(value) {
+            document.getElementById('emotion-input').value = value;
+            
+            // Remarcar visualmente el botón cliqueado
+            const event = window.event || arguments.callee.caller.arguments[0];
+            const btn = event.currentTarget;
+            if (btn) {
+                btn.style.borderColor = '#cfab34';
+                btn.style.background = 'rgba(207, 171, 52, 0.15)';
+            }
+
+            setTimeout(() => {
+                document.getElementById('quiz-form').submit();
+            }, 300);
         }
     </script>
 {% endblock %}

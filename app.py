@@ -5,11 +5,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pickle
 import os
 import numpy as np
+import uuid
+
+# Importar dependencias comerciales y analíticas
+from config.clients import get_client_config, CLIENTS
+from config.analytics import track_event, get_client_dashboard_metrics
 
 # Importar configuraciones de mapeo y confianza
 from config.taste_mapping import (
-    QUESTION_CALIBRATION, QUESTIONS_BY_LEVEL, QUESTIONS_REFINEMENT,
-    TASTE_MAPPING, ATTRIBUTE_COLUMNS
+    QUESTIONS_INITIAL, QUESTIONS_REGALO, QUESTIONS_SENSORIALES, QUESTIONS_REFINEMENT,
+    ATTRIBUTE_COLUMNS
 )
 from config.confidence import should_continue_quiz, choose_next_question, calculate_confidence
 
@@ -53,6 +58,81 @@ if not wine_profiles.empty:
     if 'source' not in wine_profiles.columns:
         wine_profiles['source'] = 'unknown'
 
+def load_client_catalog(client_id):
+    """
+    Carga el catálogo CSV de un cliente y mapea sensorialmente cada vino
+    con el dataset maestro wine_profiles para heredar atributos de cata.
+    """
+    catalog_path = os.path.join(data_dir, f'clients/{client_id}/catalog.csv')
+    if not os.path.exists(catalog_path):
+        print(f"Advertencia: No se encontró catálogo para el cliente '{client_id}'.")
+        return pd.DataFrame()
+        
+    try:
+        client_df = pd.read_csv(catalog_path)
+        # Filtrar por stock > 0 y active = True
+        client_df['active'] = client_df['active'].astype(str).str.lower().str.strip()
+        client_df = client_df[client_df['active'] == 'true']
+        client_df = client_df[client_df['stock'].astype(float) > 0]
+        
+        if client_df.empty:
+            return pd.DataFrame()
+            
+        # Preparar mapeo rápido con el catálogo maestro por título normalizado
+        maestro_by_title = {}
+        for idx, row in wine_profiles.iterrows():
+            title_norm = str(row.get('title', '')).lower().strip()
+            maestro_by_title[title_norm] = row
+            
+        # Perfiles promedio por variedad para fallbacks
+        maestro_by_variety = {}
+        if not wine_profiles.empty:
+            grouped = wine_profiles.groupby('variedad')
+            for var_name, group in grouped:
+                maestro_by_variety[var_name.lower().strip()] = group[ATTRIBUTE_COLUMNS + ['argentine_palate_score', 'polarity']].mean(numeric_only=True)
+                
+        mapped_rows = []
+        for idx, row in client_df.iterrows():
+            title_norm = str(row.get('title', '')).lower().strip()
+            variety_norm = str(row.get('variety', '')).lower().strip()
+            
+            # Buscar coincidencia exacta
+            maestro_row = maestro_by_title.get(title_norm)
+            
+            if maestro_row is not None:
+                record = row.to_dict()
+                for attr in ATTRIBUTE_COLUMNS + ['argentine_palate_score', 'polarity', 'full_text']:
+                    record[attr] = maestro_row.get(attr, 0.5)
+                record['wine_id'] = maestro_row.get('wine_id', f"CLIENT-{row.get('sku')}")
+                mapped_rows.append(record)
+            else:
+                # Fallback a perfil de variedad promedio
+                record = row.to_dict()
+                fallback_profile = maestro_by_variety.get(variety_norm)
+                if fallback_profile is None:
+                    # Intentar coincidencia parcial
+                    found = False
+                    for var_k, var_v in maestro_by_variety.items():
+                        if var_k in variety_norm or variety_norm in var_k:
+                            fallback_profile = var_v
+                            found = True
+                            break
+                    if not found:
+                        fallback_profile = {attr: 0.5 for attr in ATTRIBUTE_COLUMNS + ['argentine_palate_score', 'polarity']}
+                        
+                for attr in ATTRIBUTE_COLUMNS + ['argentine_palate_score', 'polarity']:
+                    record[attr] = fallback_profile.get(attr, 0.5)
+                record['full_text'] = row.get('description', '')
+                record['wine_id'] = f"CLIENT-{row.get('sku')}"
+                mapped_rows.append(record)
+                
+        mapped_df = pd.DataFrame(mapped_rows)
+        mapped_df['variedad'] = mapped_df['variety']
+        return mapped_df
+    except Exception as e:
+        print(f"Error al cargar catálogo del cliente '{client_id}': {e}")
+        return pd.DataFrame()
+
 # Cargar o entrenar el vectorizador de texto
 try:
     with open(vectorizer_file, 'rb') as f:
@@ -85,124 +165,217 @@ def index():
 
 @app.route('/quiz', methods=['GET', 'POST'])
 def quiz():
-    # Inicializar la sesión si es la primera vez en el quiz
-    if 'answers' not in session:
+    # Inicializar la sesión si es la primera vez en el quiz o si se requiere limpiar
+    if 'answers' not in session or request.args.get('reset') == '1':
         session['answers'] = {}
         session['current_step'] = 0
         session['knowledge_level'] = None
+        session['intencion'] = None
+        session['presupuesto'] = None
+        session['regalo_flow_step'] = 0
         session['refinement_questions'] = []
+        session['confidence_score'] = 0.5
+        session['completed_tracked'] = False
+        session['session_id'] = str(uuid.uuid4())
+
+    client_id = session.get('client_id')
+    client_config = get_client_config(client_id) if client_id else None
 
     if request.method == 'POST':
-        # Recibir la respuesta de la pregunta actual
         question_id = request.form.get('question_id')
         response_val = request.form.get('response_val')
-        
-        # Guardar respuesta
+
+        # Guardar en respuestas de sesión
         answers = session.get('answers', {})
         answers[question_id] = response_val
         session['answers'] = answers
 
-        # 1. Si respondimos a la calibración
-        if question_id == 'conocimiento':
-            session['knowledge_level'] = response_val
-            session['current_step'] = 0
+        # Procesar según el ID de la pregunta
+        if question_id == 'intencion':
+            session['intencion'] = response_val
+            track_event(client_id, 'quiz_intent_selected', session.get('session_id'), {'intent': response_val})
             return redirect(url_for('quiz'))
 
-        # 2. Si es una pregunta de los niveles base
-        current_step = session.get('current_step', 0)
-        knowledge_level = session.get('knowledge_level', 'principiante')
-        
-        # Obtener cantidad de preguntas del nivel actual
-        level_questions = QUESTIONS_BY_LEVEL.get(knowledge_level, QUESTIONS_BY_LEVEL['principiante'])
-        total_base_steps = len(level_questions)
-        
-        if current_step < total_base_steps:
-            # Incrementar el paso
-            session['current_step'] = current_step + 1
-            current_step = session['current_step']
+        elif question_id == 'conocimiento':
+            session['knowledge_level'] = response_val
+            track_event(client_id, 'quiz_level_selected', session.get('session_id'), {'level': response_val})
+            return redirect(url_for('quiz'))
 
-        # 3. Si ya completamos las preguntas del nivel base, evaluar corte o refinamiento
-        if current_step >= total_base_steps:
-            # Crear perfil de usuario temporal
-            user_profile, price_filter = create_user_profile(session['answers'])
-            
-            # Obtener recomendaciones temporales para calcular el margen y cobertura
-            recommendations = get_recommendations_for_confidence(user_profile, price_filter)
-            
-            # Decidir si se continúa
-            continue_quiz, confidence = should_continue_quiz(session['answers'], user_profile, recommendations)
-            session['confidence_score'] = float(confidence)
+        elif question_id == 'presupuesto':
+            session['presupuesto'] = response_val
+            return redirect(url_for('quiz'))
 
-            if not continue_quiz:
-                # Terminar quiz y redirigir
+        elif question_id.startswith('regalo_'):
+            track_event(client_id, 'quiz_answered', session.get('session_id'), {'question_id': question_id, 'response_val': response_val})
+            session['regalo_flow_step'] = session.get('regalo_flow_step', 0) + 1
+            if session['regalo_flow_step'] >= len(QUESTIONS_REGALO):
                 session['responses'] = session['answers']
                 return redirect(url_for('results'))
-            else:
-                # Determinar cuál es la siguiente pregunta de refinamiento a hacer
-                next_q_id = choose_next_question(session['answers'], user_profile)
-                # Incrementar paso virtual en la sesión
-                session['current_step'] = len(session['answers']) # El paso pasa a ser el total de preguntas contestadas
+            return redirect(url_for('quiz'))
+
+        else:
+            # Pregunta sensorial o de refinamiento
+            track_event(client_id, 'quiz_answered', session.get('session_id'), {'question_id': question_id, 'response_val': response_val})
+            
+            # Si estamos en preguntas sensoriales base de nivel
+            knowledge_level = session.get('knowledge_level', 'principiante')
+            sensorial_questions = QUESTIONS_SENSORIALES.get(knowledge_level, QUESTIONS_SENSORIALES['principiante'])
+            current_step = session.get('current_step', 0)
+
+            if current_step < len(sensorial_questions):
+                session['current_step'] = current_step + 1
+                current_step = session['current_step']
+
+            # Si ya contestamos las sensoriales del nivel base
+            if current_step >= len(sensorial_questions):
+                user_profile, price_filter = create_user_profile(session['answers'])
+                recommendations = get_recommendations_for_confidence(user_profile, price_filter)
                 
-                # Si el refinamiento ya fue respondido en un ciclo anterior (no debería ocurrir), salir
-                if next_q_id in session['answers']:
+                # Evaluar confianza y refinamiento
+                continue_quiz, confidence = should_continue_quiz(session['answers'], user_profile, recommendations)
+                session['confidence_score'] = float(confidence)
+
+                # Capar a un máximo absoluto de 10 respuestas totales (incluyendo calibración)
+                if not continue_quiz or len(session['answers']) >= 10:
                     session['responses'] = session['answers']
                     return redirect(url_for('results'))
-                
-                # Guardar en la cola de refinamientos
-                ref_list = session.get('refinement_questions', [])
-                ref_list.append(next_q_id)
-                session['refinement_questions'] = ref_list
-                
-        return redirect(url_for('quiz'))
+                else:
+                    next_q_id = choose_next_question(session['answers'], user_profile)
+                    if not next_q_id or next_q_id in session['answers']:
+                        session['responses'] = session['answers']
+                        return redirect(url_for('results'))
 
-    # Método GET: Renderizar la pregunta actual
-    knowledge_level = session.get('knowledge_level')
-    current_step = session.get('current_step', 0)
+                    ref_list = session.get('refinement_questions', [])
+                    ref_list.append(next_q_id)
+                    session['refinement_questions'] = ref_list
+            
+            return redirect(url_for('quiz'))
+
+    # --- Método GET ---
     answers = session.get('answers', {})
+    intencion = session.get('intencion')
+    knowledge_level = session.get('knowledge_level')
+    presupuesto = session.get('presupuesto')
+    regalo_flow_step = session.get('regalo_flow_step', 0)
 
-    # Paso Inicial: Pregunta de Calibración
+    # 1. Pregunta inicial de Intención
+    if intencion is None:
+        return render_template('quiz.html',
+                               question=QUESTIONS_INITIAL['intencion'],
+                               step_num=1,
+                               total_steps=3,
+                               confidence_text="Definiendo la intención de compra...",
+                               client=client_config)
+
+    # 2. Si la intención es regalo -> Flujo de Regalo Secuencial
+    if intencion == 'para_regalar':
+        if regalo_flow_step < len(QUESTIONS_REGALO):
+            question_to_ask = QUESTIONS_REGALO[regalo_flow_step]
+            return render_template('quiz.html',
+                                   question=question_to_ask,
+                                   step_num=regalo_flow_step + 1,
+                                   total_steps=len(QUESTIONS_REGALO),
+                                   confidence_text=f"Analizando perfil del regalo ({regalo_flow_step + 1}/{len(QUESTIONS_REGALO)})...",
+                                   client=client_config)
+        else:
+            session['responses'] = session['answers']
+            return redirect(url_for('results'))
+
+    # 3. Flujo Personal / Comida / Evento
+    # 3a. Pregunta de Nivel
     if knowledge_level is None:
-        return render_template('quiz.html', 
-                               question=QUESTION_CALIBRATION, 
-                               step_num=1, 
-                               total_steps="?",
-                               confidence_text="Calibrando tu perfil de conocimiento...")
+        return render_template('quiz.html',
+                               question=QUESTIONS_INITIAL['conocimiento'],
+                               step_num=2,
+                               total_steps=3,
+                               confidence_text="Identificando tu nivel de conocimiento...",
+                               client=client_config)
 
-    # Pasos 1 a total_base_steps: Preguntas del Nivel Seleccionado
-    level_questions = QUESTIONS_BY_LEVEL.get(knowledge_level, QUESTIONS_BY_LEVEL['principiante'])
-    total_base_steps = len(level_questions)
-    
+    # 3b. Pregunta de Presupuesto
+    if presupuesto is None:
+        return render_template('quiz.html',
+                               question=QUESTIONS_INITIAL['presupuesto'],
+                               step_num=3,
+                               total_steps=3,
+                               confidence_text="Estableciendo rango de presupuesto...",
+                               client=client_config)
+
+    # 3c. Preguntas Sensoriales de Base del Nivel
+    sensorial_questions = QUESTIONS_SENSORIALES.get(knowledge_level, QUESTIONS_SENSORIALES['principiante'])
+    current_step = session.get('current_step', 0)
+    total_base_steps = len(sensorial_questions)
+
     if current_step < total_base_steps:
-        question_to_ask = level_questions[current_step]
-        
-        # Progreso: Paso actual de total_base_steps
-        return render_template('quiz.html', 
-                               question=question_to_ask, 
-                               step_num=current_step + 1, 
-                               total_steps=total_base_steps,
-                               confidence_text="Analizando gustos de base...")
+        question_to_ask = sensorial_questions[current_step]
+        # Progreso: pasos iniciales (3) + paso sensorial actual (current_step + 1)
+        return render_template('quiz.html',
+                               question=question_to_ask,
+                               step_num=3 + current_step + 1,
+                               total_steps=3 + total_base_steps,
+                               confidence_text="Analizando gustos de base...",
+                               client=client_config)
 
-    # Pasos >= 6: Preguntas de Refinamiento
+    # 3d. Preguntas de Refinamiento (si la confianza era baja)
     ref_list = session.get('refinement_questions', [])
     if ref_list:
         next_q_id = ref_list[-1]
-        question_to_ask = QUESTIONS_REFINEMENT.get(next_q_id)
         
-        # Mostrar el progreso de refinamiento capado a 95%
-        q_answered = len(answers)
-        conf_score = session.get('confidence_score', 0.0)
-        display_conf = min(conf_score, 0.95)
-        display_conf_percent = int(display_conf * 100)
+        # Buscar la pregunta correspondiente en QUESTIONS_REFINEMENT
+        question_to_ask = None
+        if next_q_id in QUESTIONS_REFINEMENT:
+            question_to_ask = QUESTIONS_REFINEMENT[next_q_id]
+        else:
+            for ref_key, ref_q in QUESTIONS_REFINEMENT.items():
+                if ref_q['id'] == next_q_id or ref_key == next_q_id:
+                    question_to_ask = ref_q
+                    break
         
-        return render_template('quiz.html', 
-                               question=question_to_ask, 
-                               step_num=q_answered, 
-                               total_steps="Refinamiento",
-                               confidence_text=f"Afinando recomendación (Entendimiento actual: {display_conf_percent}%)")
+        if question_to_ask:
+            q_answered = len(answers)
+            conf_score = session.get('confidence_score', 0.5)
+            display_conf_percent = int(min(conf_score, 0.95) * 100)
+            
+            return render_template('quiz.html',
+                                   question=question_to_ask,
+                                   step_num=q_answered + 1,
+                                   total_steps="Refinamiento",
+                                   confidence_text=f"Afinando recomendación (Entendimiento: {display_conf_percent}%)",
+                                   client=client_config)
 
-    # Si se cae de los flujos, terminar y mostrar resultados
+    # Si se completó todo sin refinamientos extra pendientes, ir a resultados
     session['responses'] = session['answers']
     return redirect(url_for('results'))
+
+@app.route('/quiz/back')
+def quiz_back():
+    answers = session.get('answers', {})
+    if not answers:
+        return redirect(url_for('quiz'))
+
+    # Obtener y remover la última respuesta guardada
+    last_q_id = list(answers.keys())[-1]
+    answers.pop(last_q_id, None)
+    session['answers'] = answers
+
+    # Sincronizar variables de control en base a lo que se eliminó
+    if last_q_id == 'intencion':
+        session['intencion'] = None
+    elif last_q_id == 'conocimiento':
+        session['knowledge_level'] = None
+    elif last_q_id == 'presupuesto':
+        session['presupuesto'] = None
+    elif last_q_id.startswith('regalo_'):
+        session['regalo_flow_step'] = max(0, session.get('regalo_flow_step', 0) - 1)
+    else:
+        if last_q_id.startswith('ref_') or last_q_id.startswith('refinement_'):
+            ref_list = session.get('refinement_questions', [])
+            if ref_list:
+                ref_list.pop()
+                session['refinement_questions'] = ref_list
+        else:
+            session['current_step'] = max(0, session.get('current_step', 0) - 1)
+
+    return redirect(url_for('quiz'))
 
 @app.route('/results')
 def results():
@@ -215,16 +388,103 @@ def results():
     
     from config.confidence import get_display_confidence
     
-    # Calcular la confianza final (raw y display)
+    # Calcular la confianza final
     raw_confidence = calculate_confidence(responses, user_profile, recommendations)
     display_confidence, confidence_label, confidence_text = get_display_confidence(raw_confidence)
     display_conf_percent = int(display_confidence * 100)
 
+    # Inyectar variables comerciales y registrar eventos de tracking si hay client_id
+    client_id = session.get('client_id')
+    session_id = session.get('session_id')
+    client_config = get_client_config(client_id) if client_id else None
+
+    # Registrar el completado
+    if client_id and session_id and not session.get('completed_tracked'):
+        top_wines = [w['title'] for w in recommendations[:5]]
+        price_range = responses.get('presupuesto', 'medio')
+        track_event(client_id, 'quiz_completed', session_id, payload={
+            'top_recommendations': top_wines,
+            'price_range': price_range
+        })
+        track_event(client_id, 'recommendation_viewed', session_id)
+        session['completed_tracked'] = True
+
+    # --- AGRUPAMIENTO POR COLOR / ESTILO EN TABS (Punto 8) ---
+    mejor_match = recommendations[:3] # Top 3
+    
+    tintos = []
+    blancos = []
+    espumantes = []
+    rosados = []
+    precio_calidad = []
+    regalo = []
+    asado = []
+
+    for wine in recommendations:
+        variedad_l = wine.get('variedad', '').lower()
+        title_l = wine.get('title', '').lower()
+        
+        is_sparkling = any(s in variedad_l or s in title_l for s in ['sparkling', 'espumante', 'brut', 'champagne', 'extra brut', 'prosecco'])
+        is_rose = 'rosé' in variedad_l or 'rose' in variedad_l or 'rosado' in title_l or 'rose' in title_l
+        is_white = any(w in variedad_l for w in ['chardonnay', 'sauvignon', 'torrontes', 'torrontés', 'pinot grigio', 'chenin', 'semillon', 'semillón', 'viognier']) or 'blanco' in title_l
+        
+        if is_sparkling:
+            espumantes.append(wine)
+        elif is_rose:
+            rosados.append(wine)
+        elif is_white:
+            blancos.append(wine)
+        else:
+            tintos.append(wine)
+
+        # Regalo
+        if wine.get('gift_safe'):
+            regalo.append(wine)
+
+        # Asado
+        if wine.get('asado_score', 0.0) >= 0.55:
+            asado.append(wine)
+
+    # Ordenar por precio-calidad (mejor score precio_calidad_score primero)
+    precio_calidad = sorted(recommendations, key=lambda w: w.get('precio_calidad_score', 0.0), reverse=True)
+
+    es_regalo_intencion = (responses.get('intencion') == 'para_regalar')
+    es_asado_comida = (responses.get('intencion') == 'comida')
+
     return render_template('results.html', 
-                           recommendations=recommendations, 
+                           recommendations=recommendations,
+                           mejor_match=mejor_match,
+                           tintos=tintos,
+                           blancos=blancos,
+                           espumantes=espumantes,
+                           rosados=rosados,
+                           precio_calidad=precio_calidad,
+                           regalo=regalo,
+                           asado=asado,
+                           es_regalo_intencion=es_regalo_intencion,
+                           es_asado_comida=es_asado_comida,
                            confidence_percent=display_conf_percent,
                            confidence_label=confidence_label,
-                           confidence_text=confidence_text)
+                           confidence_text=confidence_text,
+                           client=client_config)
+
+@app.route('/track/tab_view/<client_slug>/<tab_name>', methods=['POST'])
+def track_tab_view(client_slug, tab_name):
+    session_id = session.get('session_id')
+    track_event(client_slug, 'result_tab_viewed', session_id, payload={'tab': tab_name})
+    return {"status": "success", "event_tracked": "result_tab_viewed", "tab": tab_name}
+
+@app.route('/track/assistant/<client_slug>/<question_key>', methods=['POST'])
+def track_assistant_question(client_slug, question_key):
+    session_id = session.get('session_id')
+    track_event(client_slug, 'assistant_question_clicked', session_id, payload={'question': question_key})
+    return {"status": "success", "event_tracked": "assistant_question_clicked", "question": question_key}
+
+@app.route('/track/explanation/<client_slug>/<wine_sku>', methods=['POST'])
+def track_wine_explanation(client_slug, wine_sku):
+    session_id = session.get('session_id')
+    track_event(client_slug, 'wine_explanation_opened', session_id, payload={'wine_sku': wine_sku})
+    return {"status": "success", "event_tracked": "wine_explanation_opened", "wine_sku": wine_sku}
 
 # Funciones auxiliares
 
@@ -235,40 +495,83 @@ def create_user_profile(responses):
     # Inicializar el perfil del usuario en 0.5 (neutral)
     user_profile_dict = {attr: 0.5 for attr in ATTRIBUTE_COLUMNS}
 
-    # Aplicar los pesos de TASTE_MAPPING
+    # Aplicar los impactos de las preguntas sensoriales
     for question_id, response_val in responses.items():
-        if question_id in TASTE_MAPPING and response_val in TASTE_MAPPING[question_id]:
-            adjustments = TASTE_MAPPING[question_id][response_val]
-            for attr, weight in adjustments.items():
-                if attr in user_profile_dict:
-                    user_profile_dict[attr] += weight
-                    user_profile_dict[attr] = max(0.0, min(1.0, user_profile_dict[attr]))
+        # Encontrar el impacto de la pregunta
+        impact = None
+        for lvl in ['principiante', 'intermedio', 'avanzado']:
+            if lvl in QUESTIONS_SENSORIALES:
+                for q in QUESTIONS_SENSORIALES[lvl]:
+                    if q['id'] == question_id:
+                        impact = q.get('attribute_impact')
+                        break
+            if impact:
+                break
+        
+        # Encontrar en refinamientos
+        if not impact and question_id in QUESTIONS_REFINEMENT:
+            impact = QUESTIONS_REFINEMENT[question_id].get('attribute_impact')
+        if not impact:
+            for ref_key, ref_q in QUESTIONS_REFINEMENT.items():
+                if ref_q['id'] == question_id or ref_key == question_id:
+                    impact = ref_q.get('attribute_impact')
+                    break
+
+        if impact:
+            # Ponderación basada en la respuesta emocional (gusta/neutro/no_gusta)
+            multiplier = 0.0
+            if response_val == 'gusta':
+                multiplier = 1.0
+            elif response_val == 'no_gusta':
+                multiplier = -1.0
+            
+            if multiplier != 0.0:
+                for attr, weight in impact.items():
+                    if attr in user_profile_dict:
+                        user_profile_dict[attr] += multiplier * weight
+                        user_profile_dict[attr] = max(0.0, min(1.0, user_profile_dict[attr]))
 
     user_profile = pd.DataFrame([user_profile_dict])
 
-    # Rango de precios
-    precio = responses.get('precio', 'Más de $50')
-    price_ranges = {
-        'Menos de $10': (0.0, 10.0),
-        '$10 - $20': (10.0, 20.0),
-        '$20 - $50': (20.0, 50.0),
-        'Más de $50': (50.0, np.inf)
-    }
-    price_min, price_max = price_ranges.get(precio, (50.0, np.inf))
+    # Rango de precios adaptado al presupuesto seleccionado (bajo, medio, alto)
+    client_id = session.get('client_id')
+    presupuesto = responses.get('presupuesto', responses.get('regalo_presupuesto', 'medio'))
+    
+    if client_id:
+        price_ranges = {
+            'bajo': (0.0, 15000.0),
+            'medio': (15000.0, 35000.0),
+            'alto': (35000.0, np.inf)
+        }
+    else:
+        price_ranges = {
+            'bajo': (0.0, 15.0),
+            'medio': (15.0, 35.0),
+            'alto': (35.0, np.inf)
+        }
+    price_min, price_max = price_ranges.get(presupuesto, (15000.0, 35000.0) if client_id else (15.0, 35.0))
 
     return user_profile, (price_min, price_max)
 
 def get_recommendations_for_confidence(user_profile, price_filter):
     """
     Versión ultraliviana de recomendaciones para calcular el margen de confianza en tiempo real.
+    Soporta la consulta sobre el catálogo del cliente si está activo.
     """
-    if wine_profiles.empty:
+    client_id = session.get('client_id')
+    current_wines = wine_profiles
+    if client_id:
+        client_catalog = load_client_catalog(client_id)
+        if not client_catalog.empty:
+            current_wines = client_catalog
+            
+    if current_wines.empty:
         return []
     
-    wine_attributes = wine_profiles[ATTRIBUTE_COLUMNS].fillna(0.0)
+    wine_attributes = current_wines[ATTRIBUTE_COLUMNS].fillna(0.0)
     similarity = cosine_similarity(user_profile, wine_attributes)[0]
     
-    wines_eval = wine_profiles.copy()
+    wines_eval = current_wines.copy()
     wines_eval['sensory_similarity'] = similarity
     
     # Filtro de precio
@@ -327,7 +630,7 @@ def generate_explanation(user_profile_series, wine_row):
         'acidez': 'su acidez vibrante y refrescante',
         'taninos': 'sus taninos firmes y bien estructurados',
         'cuerpo': 'su gran cuerpo y volumen en boca',
-        'dulzor': 'su perfil dulce y amable en el paladar'
+        'dulzor': 'su perfil amable, frutado y fácil de tomar'
     }
     
     top_matches = [attr_descriptions[m[0]] for m in matches if m[0] in attr_descriptions][:2]
@@ -419,20 +722,115 @@ def calculate_argentine_scores(wine_row):
 
     return asado_score, precio_calidad_score, argentine_palate_score
 
+# Clasificación comercial de estilos por variedad
+white_fresh_varieties = ['torrontés', 'torrontes', 'chardonnay', 'sauvignon blanc', 'sauvignon', 'pinot grigio', 'white blend', 'sparkling blend', 'espumante', 'rosé', 'rose', 'viognier']
+light_red_varieties = ['pinot noir', 'criolla', 'país', 'pais']
+structured_red_varieties = ['malbec', 'cabernet sauvignon', 'cabernet franc', 'cabernet', 'bonarda', 'syrah', 'red blend', 'bordeaux-style red blend', 'malbec-cabernet sauvignon', 'merlot', 'malbec-cabernet', 'malbec blend', 'tempranillo']
+
+def infer_commercial_intent(quiz_answers, user_profile):
+    """
+    Infiere la intención de compra y estilo comercial del usuario
+    según sus respuestas del quiz o perfil sensorial.
+    """
+    wants_white_fresh = False
+    wants_red = False
+    wants_asado = False
+    wants_price_value = False
+    wants_premium = False
+    allows_exploration = False
+
+    user_profile_series = user_profile.iloc[0] if isinstance(user_profile, pd.DataFrame) else user_profile
+
+    if quiz_answers:
+        knowledge = quiz_answers.get('conocimiento', 'principiante')
+        
+        if knowledge == 'principiante':
+            cafe = quiz_answers.get('cafe_pref')
+            choco = quiz_answers.get('chocolate_pref')
+            asado = quiz_answers.get('asado_pref')
+            
+            # Quiere blanco/fresco
+            if asado == 'A' or (cafe == 'A' and choco == 'A'):
+                wants_white_fresh = True
+            # Quiere tintos
+            if asado in ['B', 'C']:
+                wants_red = True
+            # Quiere asado robusto
+            if asado == 'C':
+                wants_asado = True
+                wants_red = True
+        else:
+            cuerpo = quiz_answers.get('cuerpo_tecnico')
+            taninos = quiz_answers.get('taninos_tecnico')
+            acidez = quiz_answers.get('acidez_tecnico')
+            
+            # Quiere blanco/fresco
+            if cuerpo == 'A' and taninos == 'A' and acidez == 'C':
+                wants_white_fresh = True
+            # Quiere tintos
+            if cuerpo in ['B', 'C'] or taninos in ['B', 'C']:
+                wants_red = True
+            # Quiere asado
+            if cuerpo == 'C' and taninos == 'C':
+                wants_asado = True
+                wants_red = True
+                
+        # Rango de precio
+        precio_r = quiz_answers.get('precio', 'Más de $50')
+        if precio_r in ['Menos de $10', '$10 - $20']:
+            wants_price_value = True
+        if precio_r == 'Más de $50':
+            wants_premium = True
+    else:
+        # Heurísticas puramente sensoriales
+        acidez = user_profile_series.get('acidez', 0.5)
+        cuerpo = user_profile_series.get('cuerpo', 0.5)
+        taninos = user_profile_series.get('taninos', 0.5)
+        
+        if acidez > 0.52 and cuerpo < 0.48 and taninos < 0.48:
+            wants_white_fresh = True
+        elif cuerpo > 0.52 or taninos > 0.52:
+            wants_red = True
+            if cuerpo > 0.62 and taninos > 0.58:
+                wants_asado = True
+
+    # Si hay contradicciones o neutralidad absoluta, permitir exploración
+    allows_exploration = (user_profile_series.get('cuerpo', 0.5) == 0.5)
+
+    return {
+        "wants_white_fresh": wants_white_fresh,
+        "wants_red": wants_red,
+        "wants_asado": wants_asado,
+        "wants_price_value": wants_price_value,
+        "wants_premium": wants_premium,
+        "allows_exploration": allows_exploration
+    }
+
 def get_recommendations(user_profile, price_filter, user_responses=None):
     """
-    Genera recomendaciones de vinos personalizadas utilizando el perfil adaptativo del usuario,
-    el cálculo del Argentine Palate Score, y una fórmula final ponderada.
-    Implementa deduplicación de títulos en caliente y maridajes orientados a la intención de comida.
+    Genera recomendaciones de vinos personalizadas utilizando el perfil adaptativo del usuario.
+    Aplica restricciones de intención semántica comercial y diversidad en tres pasadas de relajación.
     """
-    if wine_profiles.empty:
+    client_id = session.get('client_id')
+    current_wines = wine_profiles
+    if client_id:
+        client_catalog = load_client_catalog(client_id)
+        if not client_catalog.empty:
+            current_wines = client_catalog
+            
+    if current_wines.empty:
         return []
 
+    user_responses = user_responses or {}
+    is_regalo = (user_responses.get('intencion') == 'para_regalar')
+    no_sabe_gustos = is_regalo and (user_responses.get('regalo_conoce_gustos') == 'no')
+    color_pref = user_responses.get('regalo_color_pref', 'no_se')
+
     # 1. Calcular similitud coseno sensorial en 19 dimensiones
-    wine_attributes = wine_profiles[ATTRIBUTE_COLUMNS].fillna(0.0)
+    wine_attributes = current_wines[ATTRIBUTE_COLUMNS].fillna(0.0)
     similarity = cosine_similarity(user_profile, wine_attributes)[0]
 
-    wines_evaluated = wine_profiles.copy()
+    wines_evaluated = current_wines.copy()
     wines_evaluated['sensory_similarity'] = similarity
 
     # Normalizar la similitud sensorial
@@ -445,22 +843,10 @@ def get_recommendations(user_profile, price_filter, user_responses=None):
         wines_evaluated['polarity'] = 0.0
     filtered_wines = wines_evaluated[wines_evaluated['polarity'] > -0.2].copy()
 
-    # 3. Filtrar por rango de precio
-    price_min, price_max = price_filter
-    if 'price' in filtered_wines.columns:
-        filtered_wines = filtered_wines[pd.to_numeric(filtered_wines['price'], errors='coerce').notnull()]
-        filtered_wines['price'] = filtered_wines['price'].astype(float)
-        filtered_wines = filtered_wines[
-            (filtered_wines['price'] >= price_min) & (filtered_wines['price'] <= price_max)
-        ]
-    else:
-        return []
-
     if filtered_wines.empty:
         return []
 
-    # 4. Asignar Scores Argentinos
-    # Si existen columnas precalculadas (V2), las usamos para optimizar; si no (fallback V1), calculamos en caliente.
+    # 3. Asignar Scores Argentinos a todos los candidatos
     if 'argentine_palate_score' not in filtered_wines.columns or 'asado_score' not in filtered_wines.columns:
         asado_scores = []
         precio_calidad_scores = []
@@ -476,65 +862,51 @@ def get_recommendations(user_profile, price_filter, user_responses=None):
         filtered_wines['precio_calidad_score'] = precio_calidad_scores
         filtered_wines['argentine_palate_score'] = argentine_palate_scores
 
-    # Score de sentimiento simple [0, 1]
     filtered_wines['sentiment_score'] = (filtered_wines['polarity'] + 1.0) / 2.0
     filtered_wines['price_fit_score'] = 1.0
 
-    # FÓRMULA FINAL PONDERADA V2:
+    # Inferencia de intención comercial
+    intent = infer_commercial_intent(user_responses, user_profile)
+
+    # Si busca relación precio-calidad, elevar su ponderación
+    w_sensory = 0.55
+    w_sentiment = 0.20
+    w_argentine = 0.15
+    w_price = 0.10
+    
+    if intent["wants_price_value"]:
+        w_sensory = 0.40
+        w_sentiment = 0.15
+        w_argentine = 0.15
+        w_price = 0.30  # Priorizar el ajuste y rendimiento comercial
+
+    # FÓRMULA FINAL PONDERADA:
     filtered_wines['final_score'] = (
-        0.55 * filtered_wines['sensory_similarity'] +
-        0.20 * filtered_wines['sentiment_score'] +
-        0.15 * filtered_wines['argentine_palate_score'] +
-        0.10 * filtered_wines['price_fit_score']
+        w_sensory * filtered_wines['sensory_similarity'] +
+        w_sentiment * filtered_wines['sentiment_score'] +
+        w_argentine * filtered_wines['argentine_palate_score'] +
+        w_price * filtered_wines['price_fit_score']
     )
 
-    # 5. Ordenar por score final descendente
+    # Ordenar todos los candidatos
     sorted_wines = filtered_wines.sort_values(by='final_score', ascending=False)
 
-    # 6. Preparar listado final deduplicado con reglas de diversidad de V2.0.2
     recommendations = []
     seen_titles = set()
     variety_counts = {}
     winery_counts = {}
     user_profile_series = user_profile.iloc[0]
 
-    # Detectar perfil fresco/liviano (principiante y avanzado)
-    fresh_light_profile = False
-    if user_responses:
-        asado_pref = user_responses.get('asado_pref')
-        cafe_pref = user_responses.get('cafe_pref')
-        choco_pref = user_responses.get('chocolate_pref')
-        cuerpo_tecnico = user_responses.get('cuerpo_tecnico')
-        taninos_tecnico = user_responses.get('taninos_tecnico')
-        acidez_tecnico = user_responses.get('acidez_tecnico')
-        
-        # Principiante fresco/liviano
-        if asado_pref == 'A' or (cafe_pref == 'A' and choco_pref == 'A'):
-            fresh_light_profile = True
-        # Avanzado fresco/liviano
-        elif cuerpo_tecnico == 'A' and taninos_tecnico == 'A' and acidez_tecnico == 'C':
-            fresh_light_profile = True
-
-    # También por perfil sensorial si tiene acidez alta y cuerpo/taninos bajos
-    if user_profile_series.get('acidez', 0.5) > 0.50 and user_profile_series.get('cuerpo', 0.5) < 0.50 and user_profile_series.get('taninos', 0.5) < 0.50:
-        fresh_light_profile = True
-
-    # Determinar si es perfil intensivo/asado
-    is_intense_profile = False
-    if user_responses:
-        asado_pref = user_responses.get('asado_pref', 'B')
-        if asado_pref == 'D':
-            is_intense_profile = True
-    elif user_profile_series.get('cuerpo', 0.5) > 0.65:
-        is_intense_profile = True
-
-    fresh_varieties = ['torrontés', 'torrontes', 'chardonnay', 'sauvignon blanc', 'pinot noir', 'rosé', 'rose', 'white blend', 'sparkling blend', 'pinot grigio', 'viognier']
-    tinto_estructurado_varieties = ['malbec', 'cabernet sauvignon', 'syrah', 'bordeaux-style red blend', 'tempranillo', 'merlot', 'red blend']
-
-    # Pasada 1: Aplicar reglas estrictas de diversidad de V2.0.2
+    # --- PASADA 1: Filtro de Precio Estricto e Intención Estricta ---
+    price_min, price_max = price_filter
     for idx, row in sorted_wines.iterrows():
-        if len(recommendations) >= 8:
+        if len(recommendations) >= 15:
             break
+
+        # A. Filtro de precio estricto de la Pasada 1
+        price = float(row.get('price', 0))
+        if price < price_min or price > price_max:
+            continue
 
         raw_title = row.get('title', 'Vino sin Título')
         clean_title = str(raw_title).replace("Recomendación Similar a: ", "").replace("Recomendación Similar a:", "").strip()
@@ -549,62 +921,85 @@ def get_recommendations(user_profile, price_filter, user_responses=None):
         winery = extract_winery_from_title(clean_title)
         variedad_lower = variedad.lower()
 
-        # A. Excluir variedad Unknown en Top 5
+        # B. Reglas de Regalo sin Saber Gustos (Evitar perfiles extremos)
+        if no_sabe_gustos:
+            acidez = float(row.get('acidez', 0.5))
+            taninos = float(row.get('taninos', 0.5))
+            dulzor = float(row.get('dulzor', 0.5))
+            if acidez > 0.75:
+                continue
+            if taninos > 0.75:
+                continue
+            if dulzor > 0.75:
+                continue
+
+        # C. Filtrado Estricto de Color para Regalos
+        if is_regalo and color_pref != 'no_se':
+            is_white = any(w in variedad_lower for w in ['chardonnay', 'sauvignon', 'torrontes', 'torrontés', 'pinot grigio', 'chenin', 'semillon', 'semillón', 'viognier']) or 'blanco' in clean_title.lower()
+            is_sparkling = any(s in variedad_lower or s in clean_title.lower() for s in ['sparkling', 'espumante', 'brut', 'champagne', 'extra brut', 'prosecco'])
+            is_rose = 'rosé' in variedad_lower or 'rose' in variedad_lower or 'rosado' in clean_title.lower() or 'rose' in clean_title.lower()
+            is_red = not is_white and not is_sparkling and not is_rose
+
+            if color_pref == 'tinto' and not is_red:
+                continue
+            elif color_pref == 'blanco' and not is_white:
+                continue
+            elif color_pref == 'rosado_espumante' and not (is_rose or is_sparkling):
+                continue
+
+        # Diversidad
         if len(recommendations) < 5 and variedad_lower in ['unknown', 'variedad desconocida', 'unknown variety']:
             continue
-            
-        # B. Máximo 2 vinos de la misma variedad en Top 5
-        var_count = variety_counts.get(variedad_lower, 0)
-        if len(recommendations) < 5 and var_count >= 2:
+        if len(recommendations) < 5 and variety_counts.get(variedad_lower, 0) >= 2:
+            continue
+        if len(recommendations) < 5 and winery_counts.get(winery.lower(), 0) >= 2:
             continue
 
-        # C. Máximo 2 vinos de la misma bodega en Top 5
-        winery_count = winery_counts.get(winery.lower(), 0)
-        if len(recommendations) < 5 and winery_count >= 2:
-            continue
+        # Restricciones de estilo estrictas (Pasada 1)
+        if len(recommendations) < 5 and not is_regalo:
+            if intent["wants_white_fresh"]:
+                is_fresh = any(f in variedad_lower for f in white_fresh_varieties) or any(l in variedad_lower for l in light_red_varieties)
+                if not is_fresh:
+                    continue
+                if 'malbec' in variedad_lower:
+                    malbecs_top5 = sum(1 for w in recommendations if 'malbec' in w['variedad'].lower())
+                    if malbecs_top5 >= 1:
+                        continue
+            elif intent["wants_red"]:
+                is_white = any(w_v in variedad_lower for w_v in white_fresh_varieties)
+                if is_white:
+                    continue
+            if intent["wants_asado"]:
+                is_structured = any(s_v in variedad_lower for s_v in structured_red_varieties)
+                if not is_structured:
+                    continue
+                if 'malbec' in variedad_lower:
+                    malbecs_top5 = sum(1 for w in recommendations if 'malbec' in w['variedad'].lower())
+                    if malbecs_top5 >= 3:
+                        continue
+            else:
+                if 'malbec' in variedad_lower:
+                    malbecs_top5 = sum(1 for w in recommendations if 'malbec' in w['variedad'].lower())
+                    if malbecs_top5 >= 2:
+                        continue
 
-        # D. Reglas específicas para Perfil Fresco/Liviano
-        if len(recommendations) < 5 and fresh_light_profile:
-            # 1. Máximo 1 Malbec
-            is_malbec = 'malbec' in variedad_lower
-            if is_malbec:
-                malbec_in_top5 = sum(1 for w in recommendations if 'malbec' in w['variedad'].lower())
-                if malbec_in_top5 >= 1:
-                    continue
-            
-            # 2. Máximo 2 tintos estructurados
-            is_tinto_est = any(t in variedad_lower for t in tinto_estructurado_varieties) and (row.get('cuerpo', 0.0) > 0.40 or row.get('taninos', 0.0) > 0.40)
-            if is_tinto_est:
-                tintos_in_top5 = sum(1 for w in recommendations if any(t in w['variedad'].lower() for t in tinto_estructurado_varieties) and (w['cuerpo'] > 0.40 or w['taninos'] > 0.40))
-                if tintos_in_top5 >= 2:
-                    continue
-                    
-            # 3. Forzar a tener variedad fresca si no es tinto
-            is_fresh = any(f in variedad_lower for f in fresh_varieties)
-            if not is_fresh:
-                non_fresh_in_top5 = sum(1 for w in recommendations if not any(f in w['variedad'].lower() for f in fresh_varieties))
-                if non_fresh_in_top5 >= 2:
-                    continue
-
-        # E. Excluir exceso de Malbec si no es perfil asado por defecto
-        elif len(recommendations) < 5 and not is_intense_profile:
-            is_malbec = 'malbec' in variedad_lower
-            if is_malbec:
-                malbec_in_top5 = sum(1 for w in recommendations if 'malbec' in w['variedad'].lower())
-                if malbec_in_top5 >= 2:
-                    continue
-
+        # Agregar
         seen_titles.add(clean_title.lower())
         variety_counts[variedad_lower] = variety_counts.get(variedad_lower, 0) + 1
         winery_counts[winery.lower()] = winery_counts.get(winery.lower(), 0) + 1
 
-        wine_data = build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses)
+        wine_data = build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses, intent_relaxed=False)
+        # Identificar regalo versátil
+        if no_sabe_gustos or (is_regalo and any(v in variedad_lower for v in ['malbec', 'cabernet', 'blend', 'chardonnay', 'brut'])):
+            wine_data['gift_safe'] = True
+        else:
+            wine_data['gift_safe'] = False
         recommendations.append(wine_data)
 
-    # Pasada 2 (Fallback): si faltan recomendaciones, completar relajando restricciones
-    if len(recommendations) < 8:
+    # --- PASADA 2: Relajación de Rango de Precio con Intención Estricta ---
+    if len(recommendations) < 15:
         for idx, row in sorted_wines.iterrows():
-            if len(recommendations) >= 8:
+            if len(recommendations) >= 15:
                 break
 
             raw_title = row.get('title', 'Vino sin Título')
@@ -618,9 +1013,116 @@ def get_recommendations(user_profile, price_filter, user_responses=None):
                 variedad = extract_variedad_from_title(clean_title)
                 
             winery = extract_winery_from_title(clean_title)
+            variedad_lower = variedad.lower()
+
+            # Reglas de regalo sin saber gustos
+            if no_sabe_gustos:
+                acidez = float(row.get('acidez', 0.5))
+                taninos = float(row.get('taninos', 0.5))
+                dulzor = float(row.get('dulzor', 0.5))
+                if acidez > 0.75:
+                    continue
+                if taninos > 0.75:
+                    continue
+                if dulzor > 0.75:
+                    continue
+
+            # Filtrado Estricto de Color para Regalos
+            if is_regalo and color_pref != 'no_se':
+                is_white = any(w in variedad_lower for w in ['chardonnay', 'sauvignon', 'torrontes', 'torrontés', 'pinot grigio', 'chenin', 'semillon', 'semillón', 'viognier']) or 'blanco' in clean_title.lower()
+                is_sparkling = any(s in variedad_lower or s in clean_title.lower() for s in ['sparkling', 'espumante', 'brut', 'champagne', 'extra brut', 'prosecco'])
+                is_rose = 'rosé' in variedad_lower or 'rose' in variedad_lower or 'rosado' in clean_title.lower() or 'rose' in clean_title.lower()
+                is_red = not is_white and not is_sparkling and not is_rose
+
+                if color_pref == 'tinto' and not is_red:
+                    continue
+                elif color_pref == 'blanco' and not is_white:
+                    continue
+                elif color_pref == 'rosado_espumante' and not (is_rose or is_sparkling):
+                    continue
+
+            # Diversidad y Restricciones duras de intención en Top 5 (mantener estrictas de estilo)
+            if len(recommendations) < 5 and not is_regalo:
+                if variedad_lower in ['unknown', 'variedad desconocida', 'unknown variety']:
+                    continue
+                if variety_counts.get(variedad_lower, 0) >= 2:
+                    continue
+                if winery_counts.get(winery.lower(), 0) >= 2:
+                    continue
+                
+                # Reglas estrictas de Estilo (incluso con precio relajado)
+                if intent["wants_white_fresh"]:
+                    is_fresh = any(f in variedad_lower for f in white_fresh_varieties) or any(l in variedad_lower for l in light_red_varieties)
+                    if not is_fresh:
+                        continue  # Nunca meter Cabernet en blancos
+                elif intent["wants_red"] or intent["wants_asado"]:
+                    is_white = any(w_v in variedad_lower for w_v in white_fresh_varieties)
+                    if is_white:
+                        continue  # Nunca meter Torrontés en tintos/asados
+
+            # Registrar
+            seen_titles.add(clean_title.lower())
+            variety_counts[variedad_lower] = variety_counts.get(variedad_lower, 0) + 1
+            winery_counts[winery.lower()] = winery_counts.get(winery.lower(), 0) + 1
+
+            wine_data = build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses, intent_relaxed=True)
+            if no_sabe_gustos or (is_regalo and any(v in variedad_lower for v in ['malbec', 'cabernet', 'blend', 'chardonnay', 'brut'])):
+                wine_data['gift_safe'] = True
+            else:
+                wine_data['gift_safe'] = False
+            recommendations.append(wine_data)
+
+    # --- PASADA 3: Relajación Total Absoluta (Último recurso de inventario) ---
+    if len(recommendations) < 15:
+        for idx, row in sorted_wines.iterrows():
+            if len(recommendations) >= 15:
+                break
+
+            raw_title = row.get('title', 'Vino sin Título')
+            clean_title = str(raw_title).replace("Recomendación Similar a: ", "").replace("Recomendación Similar a:", "").strip()
+            
+            if clean_title.lower() in seen_titles:
+                continue
+
+            variedad = row.get('variedad', 'Unknown')
+            if pd.isna(variedad) or str(variedad).strip().lower() in ['unknown', 'variedad desconocida', 'unknown variety']:
+                variedad = extract_variedad_from_title(clean_title)
+                
+            winery = extract_winery_from_title(clean_title)
+            variedad_lower = variedad.lower()
+
+            # Reglas de regalo sin saber gustos
+            if no_sabe_gustos:
+                acidez = float(row.get('acidez', 0.5))
+                taninos = float(row.get('taninos', 0.5))
+                dulzor = float(row.get('dulzor', 0.5))
+                if acidez > 0.75:
+                    continue
+                if taninos > 0.75:
+                    continue
+                if dulzor > 0.75:
+                    continue
+
+            # Filtrado Estricto de Color para Regalos
+            if is_regalo and color_pref != 'no_se':
+                is_white = any(w in variedad_lower for w in ['chardonnay', 'sauvignon', 'torrontes', 'torrontés', 'pinot grigio', 'chenin', 'semillon', 'semillón', 'viognier']) or 'blanco' in clean_title.lower()
+                is_sparkling = any(s in variedad_lower or s in clean_title.lower() for s in ['sparkling', 'espumante', 'brut', 'champagne', 'extra brut', 'prosecco'])
+                is_rose = 'rosé' in variedad_lower or 'rose' in variedad_lower or 'rosado' in clean_title.lower() or 'rose' in clean_title.lower()
+                is_red = not is_white and not is_sparkling and not is_rose
+
+                if color_pref == 'tinto' and not is_red:
+                    continue
+                elif color_pref == 'blanco' and not is_white:
+                    continue
+                elif color_pref == 'rosado_espumante' and not (is_rose or is_sparkling):
+                    continue
 
             seen_titles.add(clean_title.lower())
-            wine_data = build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses)
+            wine_data = build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses, intent_relaxed=True)
+            if no_sabe_gustos or (is_regalo and any(v in variedad_lower for v in ['malbec', 'cabernet', 'blend', 'chardonnay', 'brut'])):
+                wine_data['gift_safe'] = True
+            else:
+                wine_data['gift_safe'] = False
             recommendations.append(wine_data)
 
     return recommendations
@@ -636,7 +1138,7 @@ def extract_winery_from_title(title):
         return " ".join(words[:2])
     return words[0] if words else 'Bodega Desconocida'
 
-def build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses):
+def build_wine_data_record(row, clean_title, variedad, winery, user_profile_series, user_responses, intent_relaxed=False):
     """
     Construye de forma estructurada el registro de datos para cada recomendación.
     """
@@ -736,12 +1238,27 @@ def build_wine_data_record(row, clean_title, variedad, winery, user_profile_seri
     else:
         afinidad_arg = "Baja"
 
+    wine_id_val = row.get('wine_id', 0)
+    try:
+        wine_id_val = int(wine_id_val)
+    except ValueError:
+        wine_id_val = str(wine_id_val)
+
     return {
-        'wine_id': int(row.get('wine_id', 0)),
+        'wine_id': wine_id_val,
         'title': clean_title,
         'price': formatted_price,
         'variedad': variedad,
         'winery': winery,
+        'sku': row.get('sku', ''),
+        'vintage': row.get('vintage', ''),
+        'region': row.get('region', ''),
+        'stock': int(row.get('stock', 0)) if pd.notna(row.get('stock')) else 0,
+        'image_url': row.get('image_url', ''),
+        'product_url': row.get('product_url', ''),
+        'description': row.get('description', ''),
+        'tags': row.get('tags', ''),
+        'intent_relaxed': bool(intent_relaxed),
         'sentiment_label': row.get('sentiment_label', 'Neutral'),
         'polarity': float(row.get('polarity', 0.0)),
         'match_rate': match_rate,
@@ -771,6 +1288,134 @@ def extract_variedad_from_title(title):
         except IndexError:
             pass
     return title_str.split()[-1]
+
+# --- RUTAS MULTI-CLIENTE Y ANALÍTICAS ---
+
+@app.route('/c/<client_slug>')
+def client_landing(client_slug):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return "Cliente no encontrado", 404
+        
+    # Inicializar sesión limpia para este cliente
+    session['client_id'] = client_slug
+    session['session_id'] = str(uuid.uuid4())
+    session.pop('answers', None)
+    session.pop('current_step', None)
+    session.pop('completed_tracked', None)
+    
+    # Registrar evento quiz_started
+    track_event(client_slug, 'quiz_started', session['session_id'])
+    
+    return render_template('client_landing.html', client=client_config)
+
+@app.route('/c/<client_slug>/quiz')
+def client_quiz_start(client_slug):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return "Cliente no encontrado", 404
+        
+    session['client_id'] = client_slug
+    if 'session_id' not in session:
+        session['session_id'] = str(uuid.uuid4())
+        track_event(client_slug, 'quiz_started', session['session_id'])
+        
+    # Reiniciar estados del quiz
+    session.pop('answers', None)
+    session.pop('current_step', None)
+    session.pop('completed_tracked', None)
+    return redirect(url_for('quiz'))
+
+@app.route('/c/<client_slug>/results')
+def client_results(client_slug):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return "Cliente no encontrado", 404
+        
+    session['client_id'] = client_slug
+    return redirect(url_for('results'))
+
+@app.route('/track/click/<client_slug>/<wine_sku>')
+def track_wine_click(client_slug, wine_sku):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return "Cliente no encontrado", 404
+        
+    session_id = session.get('session_id')
+    
+    # Cargar catálogo del cliente para obtener la URL de producto
+    catalog = load_client_catalog(client_slug)
+    target_url = client_config['ecommerce_url']
+    wine_title = "Vino Desconocido"
+    
+    if not catalog.empty:
+        wine_row = catalog[catalog['sku'] == wine_sku]
+        if not wine_row.empty:
+            target_url = wine_row.iloc[0].get('product_url', target_url)
+            wine_title = wine_row.iloc[0].get('title', wine_title)
+            
+    # Registrar evento
+    track_event(client_slug, 'wine_clicked', session_id, payload={
+        'wine_sku': wine_sku,
+        'wine_title': wine_title
+    })
+    
+    return redirect(target_url)
+
+@app.route('/track/whatsapp/<client_slug>/<wine_sku>')
+def track_whatsapp_click(client_slug, wine_sku):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return "Cliente no encontrado", 404
+        
+    session_id = session.get('session_id')
+    whatsapp_num = client_config.get('whatsapp_number', '')
+    
+    catalog = load_client_catalog(client_slug)
+    wine_title = "un vino del catálogo"
+    if not catalog.empty:
+        wine_row = catalog[catalog['sku'] == wine_sku]
+        if not wine_row.empty:
+            wine_title = wine_row.iloc[0].get('title', wine_title)
+            
+    # Registrar evento
+    track_event(client_slug, 'whatsapp_clicked', session_id, payload={
+        'wine_sku': wine_sku,
+        'wine_title': wine_title
+    })
+    
+    # Construir enlace de WhatsApp con mensaje predeterminado
+    import urllib.parse
+    message = f"Hola! Realicé el quiz de Descorcha.IA y me interesa comprar/consultar por el vino: {wine_title} (SKU: {wine_sku})."
+    encoded_message = urllib.parse.quote(message)
+    whatsapp_url = f"https://wa.me/{whatsapp_num}?text={encoded_message}"
+    
+    return redirect(whatsapp_url)
+
+@app.route('/track/feedback/<client_slug>/<feedback_type>', methods=['POST'])
+def track_feedback(client_slug, feedback_type):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return {"status": "error", "message": "Cliente no encontrado"}, 404
+        
+    session_id = session.get('session_id')
+    event = 'feedback_like' if feedback_type == 'like' else 'feedback_dislike'
+    
+    track_event(client_slug, event, session_id)
+    return {"status": "success", "event_tracked": event}
+
+@app.route('/admin/<client_slug>/dashboard')
+def client_dashboard(client_slug):
+    client_config = get_client_config(client_slug)
+    if not client_config:
+        return "Cliente no encontrado", 404
+        
+    metrics = get_client_dashboard_metrics(client_slug)
+    return render_template('client_dashboard.html', client=client_config, metrics=metrics)
+
+@app.route('/commercial')
+def commercial_landing():
+    return render_template('commercial_landing.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

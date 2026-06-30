@@ -1,113 +1,508 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Tus Recomendaciones Personalizadas</h2>
-    
-    <div class="hero-section" style="max-width: 700px; margin: 0 auto 3rem auto; padding: 2rem; border-color: rgba(212, 175, 55, 0.25);">
-        <h3 style="font-family: var(--font-serif); color: var(--gold-primary); margin-top: 0; font-size: 1.5rem;">Entendimiento de tu Paladar: <strong>{{ confidence_label }}</strong></h3>
-        <div style="font-size: 2.5rem; font-weight: 700; color: #fff; margin: 1rem 0;">
-            {{ confidence_percent }}%
+    <!-- Encabezado del local si corresponde -->
+    {% if client %}
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <img src="{{ client.logo_url }}" alt="{{ client.client_name }}" style="max-height: 45px; margin-bottom: 0.3rem; border-radius: 6px;">
+            <div style="font-size: 0.82rem; color: var(--gold-primary); font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;">{{ client.client_name }}</div>
         </div>
-        <div class="attribute-bar-bg" style="max-width: 300px; margin: 0 auto 1rem auto; height: 8px;">
-            <div class="attribute-bar-fill" style="width: {{ confidence_percent }}%; background: linear-gradient(90deg, var(--wine-primary) 0%, var(--gold-primary) 100%);"></div>
-        </div>
-        <p style="font-size: 1.1rem; color: var(--text-muted); font-style: italic; margin-bottom: 0;">
-            {{ confidence_text }}
+    {% endif %}
+
+    <div style="text-align: center; margin-bottom: 3rem; padding: 0 1rem;">
+        <h2 style="font-family: var(--font-serif); font-size: 2.2rem; color: #fff; margin-bottom: 0.5rem; font-weight: 400;">Tus recomendaciones ideales</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto;">
+            Mapeamos los perfiles sensoriales de nuestro catálogo con tu patrón biológico de paladar.
         </p>
     </div>
 
-    {% if recommendations %}
-        <div class="recommendations-grid">
-            {% for wine in recommendations %}
-                <div class="wine-card">
-                    <div>
-                        <div class="wine-header">
-                            <h3 class="wine-title">{{ wine.title }}</h3>
-                            <span class="match-badge">{{ wine.match_rate }}% Match</span>
-                        </div>
-                        
-                        <div class="wine-meta">
-                            <div class="meta-item">
-                                <span class="meta-label">Precio</span>
-                                <span class="meta-value">
-                                    {% if wine.price %}
-                                        ${{ "%.2f"|format(wine.price) }}
-                                    {% else %}
-                                        No disponible
-                                    {% endif %}
-                                </span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Variedad</span>
-                                <span class="meta-value">{{ wine.variedad }}</span>
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-label">Afinidad Argentina</span>
-                                <span class="meta-value" style="color: {% if wine.afinidad_argentine == 'Alta' %}#81c784{% elif wine.afinidad_argentine == 'Media' %}#ffd54f{% else %}#e57373{% endif %};">
-                                    {{ wine.afinidad_argentine }}
-                                </span>
-                            </div>
-                        </div>
+    <!-- Barra de Confianza de Recomendación -->
+    <div class="glass-panel" style="max-width: 600px; margin: 0 auto 3rem auto; padding: 1.5rem; text-align: center; border-color: rgba(207,171,52,0.25);">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+            <div style="position: relative; width: 75px; height: 75px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="75" height="75" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#cfab34" stroke-width="3" stroke-dasharray="{{ confidence_percent }}, 100" />
+                </svg>
+                <span style="position: absolute; font-size: 1.15rem; font-weight: 700; color: #fff;">{{ confidence_percent }}%</span>
+            </div>
+            <div style="text-align: left;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-primary); font-weight: 600;">Confianza de Ajuste</div>
+                <h4 style="margin: 0.1rem 0; font-size: 1.1rem; color: #fff; font-weight: 500;">{{ confidence_label }}</h4>
+                <p style="margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.4;">{{ confidence_text }}</p>
+            </div>
+        </div>
+    </div>
 
-                        <!-- Indicadores Locales Argentinos -->
-                        <div style="margin-bottom: 1.2rem; font-size: 0.9rem; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 0.8rem;">
-                            <div style="margin-bottom: 0.4rem;">
-                                <strong style="color: var(--gold-primary);">Maridaje Sugerido:</strong> 
-                                <span style="color: var(--text-light);">{{ wine.ideal_para }}</span>
-                            </div>
-                            <div>
-                                <strong style="color: var(--gold-primary);">Ocasión Recomendada:</strong> 
-                                <span style="color: var(--text-light);">{{ wine.ocasion }}</span>
-                            </div>
-                        </div>
+    <!-- PESTAÑAS (TABS) INTERACTIVAS (Punto 8) -->
+    <div style="max-width: 1000px; margin: 0 auto 2.5rem auto; padding: 0 1rem;">
+        <div class="tabs-header" style="display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.8rem; border-bottom: 1.5px solid rgba(255, 255, 255, 0.05); scrollbar-width: thin; -ms-overflow-style: none;">
+            
+            <button class="tab-btn active" onclick="switchTab(event, 'tab-mejor-match')">🔥 Mejor Match</button>
+            
+            {% if tintos %}
+                <button class="tab-btn" onclick="switchTab(event, 'tab-tintos')">🍷 Tintos ({{ tintos|length }})</button>
+            {% endif %}
+            
+            {% if blancos %}
+                <button class="tab-btn" onclick="switchTab(event, 'tab-blancos')">🥂 Blancos ({{ blancos|length }})</button>
+            {% endif %}
+            
+            {% if espumantes %}
+                <button class="tab-btn" onclick="switchTab(event, 'tab-espumantes')">🍾 Espumantes ({{ espumantes|length }})</button>
+            {% endif %}
+            
+            {% if rosados %}
+                <button class="tab-btn" onclick="switchTab(event, 'tab-rosados')">🌸 Rosados ({{ rosados|length }})</button>
+            {% endif %}
+            
+            <button class="tab-btn" onclick="switchTab(event, 'tab-precio-calidad')">💎 Relación Calidad/Precio</button>
+            
+            {% if es_regalo_intencion or regalo %}
+                <button class="tab-btn {% if es_regalo_intencion %}highlighted{% endif %}" onclick="switchTab(event, 'tab-regalo')">🎁 Para Regalar</button>
+            {% endif %}
+            
+            {% if es_asado_comida or asado %}
+                <button class="tab-btn" onclick="switchTab(event, 'tab-asado')">🍖 Ideal Asado</button>
+            {% endif %}
+        </div>
+    </div>
 
-                        <div class="sentiment-indicator sentiment-{{ wine.sentiment_label }}">
-                            <div class="sentiment-dot"></div>
-                            <span>Mercado: {{ wine.sentiment_label }} (Polaridad: {{ "%.2f"|format(wine.polarity) }})</span>
-                        </div>
+    <!-- CONTENEDOR DE CONTENIDOS DE PESTAÑAS -->
+    <div style="max-width: 1000px; margin: 0 auto; padding: 0 1rem; min-height: 400px;">
+        
+        <!-- Helper Macro para Renderizar Cards de Vino -->
+        {% macro render_wine_card(wine, is_best=False) %}
+            <div class="glass-panel wine-card" style="display: flex; flex-direction: column; background: rgba(18, 10, 10, 0.7); border: 1.5px solid {% if is_best %}rgba(207,171,52,0.45){% else %}rgba(255,255,255,0.04){% endif %}; border-radius: 16px; padding: 2rem 1.8rem; position: relative; box-shadow: 0 12px 30px rgba(0,0,0,0.45); transition: all 0.25s ease;">
+                
+                {% if is_best %}
+                    <span style="position: absolute; top: -12px; left: 1.8rem; background: linear-gradient(135deg, #cfab34 0%, #a8841a 100%); color: #000; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; padding: 0.35rem 0.8rem; border-radius: 20px; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(207,171,52,0.3);">Match Sugerido</span>
+                {% endif %}
 
-                        <div class="wine-explanation">
-                            {{ wine.explanation }}
+                <!-- Título y Bodega -->
+                <div style="margin-bottom: 1.2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+                        <div>
+                            <h3 style="font-family: var(--font-serif); font-size: 1.45rem; color: #fff; margin: 0 0 0.2rem 0; font-weight: 400; line-height: 1.2;">{{ wine.title }}</h3>
+                            <span style="font-size: 0.85rem; color: var(--gold-primary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">{{ wine.winery }}</span>
+                        </div>
+                        <div style="background: rgba(207,171,52,0.12); color: var(--gold-primary); font-size: 0.85rem; font-weight: 700; padding: 0.4rem 0.7rem; border-radius: 8px; border: 1px solid rgba(207,171,52,0.2); white-space: nowrap;">
+                            {{ wine.match_rate }}% Match
                         </div>
                     </div>
+                </div>
 
-                    <!-- Perfil Sensorial (Atributos Clave) -->
-                    <div class="wine-attributes">
-                        <h4 style="margin: 0 0 0.5rem 0; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--gold-primary);">Perfil del Vino</h4>
-                        
-                        {% set display_attributes = [
-                            ('frutas_rojas', 'Frutas Rojas'),
-                            ('frutas_negras', 'Frutas Negras'),
-                            ('especias', 'Especias'),
-                            ('acidez', 'Acidez'),
-                            ('madera_y_otros', 'Madera/Roble'),
-                            ('cuerpo', 'Cuerpo'),
-                            ('taninos', 'Taninos'),
-                            ('dulzor', 'Dulzor')
-                        ] %}
-                        
-                        {% for key, label in display_attributes %}
+                <!-- Detalles Técnicos Principales -->
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; padding: 0.8rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 1.2rem; text-align: center;">
+                    <div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem;">Precio</div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: #fff;">
+                            {% if wine.price %}
+                                ${{ "{:,.2f}".format(wine.price).replace(",", "X").replace(".", ",").replace("X", ".") }}
+                            {% else %}
+                                S/D
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem;">Variedad</div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ wine.variedad }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.2rem;">Región</div>
+                        <div style="font-size: 0.95rem; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ wine.region or "Mendoza" }}</div>
+                    </div>
+                </div>
+
+                <!-- Info Local Argentina -->
+                <div style="font-size: 0.88rem; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem; line-height: 1.5;">
+                    <div style="margin-bottom: 0.4rem;">
+                        <strong style="color: var(--gold-primary);">🍽️ Maridaje:</strong> 
+                        <span style="color: rgba(255,255,255,0.85);">{{ wine.ideal_para }}</span>
+                    </div>
+                    <div>
+                        <strong style="color: var(--gold-primary);">🎉 Ocasión:</strong> 
+                        <span style="color: rgba(255,255,255,0.85);">{{ wine.ocasion }}</span>
+                    </div>
+                </div>
+
+                <!-- SKU y Stock -->
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1.2rem; display: flex; justify-content: space-between;">
+                    <span>SKU: <strong>{{ wine.sku or "S/D" }}</strong></span>
+                    <span>Cosecha: <strong>{{ wine.vintage or "2023" }}</strong></span>
+                    <span>Stock: <strong style="color: {% if wine.stock and wine.stock|int > 0 %}#81c784{% else %}#e57373{% endif %};">{{ wine.stock or "S/D" }} u.</strong></span>
+                </div>
+
+                <!-- Botón ¿Por qué este vino? interactivo -->
+                <button type="button" class="btn-why" onclick="toggleExplanation(this, '{{ wine.sku }}')" style="width: 100%; background: none; border: 1px dashed rgba(207,171,52,0.3); border-radius: 8px; color: var(--gold-primary); font-size: 0.82rem; padding: 0.5rem; cursor: pointer; transition: all 0.2s; font-weight: 500; margin-bottom: 1rem;">
+                    💡 ¿Por qué me recomiendan este vino?
+                </button>
+
+                <!-- Bloque Oculto de Explicación Sensorial -->
+                <div class="explanation-block" style="display: none; background: rgba(0,0,0,0.2); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; font-size: 0.88rem; line-height: 1.5; color: rgba(255,255,255,0.85); border-left: 3px solid var(--gold-primary); text-align: left;">
+                    <p style="margin: 0 0 0.8rem 0; font-style: italic;">{{ wine.explanation }}</p>
+                    
+                    <!-- Atributos técnicos del vino -->
+                    <div style="font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.6rem;">
+                        <span style="color: var(--gold-primary); font-weight: 600; display: block; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.5px;">Perfil de Cata</span>
+                        {% set cat_attrs = [('cuerpo', 'Cuerpo'), ('acidez', 'Acidez'), ('taninos', 'Taninos'), ('dulzor', 'Dulzor'), ('madera_y_otros', 'Madera/Roble')] %}
+                        {% for key, label in cat_attrs %}
                             {% if wine[key] is defined %}
-                                <div class="attribute-row">
-                                    <span class="attribute-name">{{ label }}</span>
-                                    <div class="attribute-bar-bg">
-                                        <div class="attribute-bar-fill" style="width: {{ (wine[key] * 100)|int }}%;"></div>
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span style="color: rgba(255,255,255,0.55);">{{ label }}</span>
+                                    <div style="flex: 1; height: 3px; background: rgba(255,255,255,0.05); margin: 0 0.8rem; border-radius: 2px; overflow: hidden;">
+                                        <div style="width: {{ (wine[key] * 100)|int }}%; height: 100%; background: #cfab34;"></div>
                                     </div>
-                                    <span class="attribute-value">{{ (wine[key] * 100)|int }}%</span>
+                                    <span style="font-weight: 500; min-width: 25px; text-align: right;">{{ (wine[key] * 100)|int }}%</span>
                                 </div>
                             {% endif %}
                         {% endfor %}
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="hero-section">
-            <p>No pudimos encontrar recomendaciones que se ajusten exactamente a tus filtros de precio. Intenta ajustar tu presupuesto.</p>
-        </div>
-    {% endif %}
 
-    <div class="btn-container" style="margin-top: 4rem;">
-        <a href="{{ url_for('quiz') }}" class="btn">Rehacer Quiz de Paladar</a>
+                <!-- Botones de compra y WhatsApp en la misma fila horizontal (Punto 9) -->
+                {% if client and wine.sku %}
+                    <div style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 0.5rem; justify-content: space-between; margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); width: 100%;">
+                        <a href="/track/click/{{ client.client_slug }}/{{ wine.sku }}" target="_blank" class="btn" style="flex: 1; padding: 0.7rem 0.2rem; font-size: 0.72rem; text-align: center; text-transform: none; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #fff;">🛒 Comprar</a>
+                        <a href="/track/whatsapp/{{ client.client_slug }}/{{ wine.sku }}" target="_blank" class="btn" style="flex: 1; padding: 0.7rem 0.2rem; font-size: 0.72rem; text-align: center; text-transform: none; border-radius: 8px; background: linear-gradient(135deg, #128c7e 0%, #075e54 100%); border-color: #25d366; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600;">💬 WhatsApp</a>
+                    </div>
+                {% endif %}
+            </div>
+        {% endmacro %}
+
+        <!-- Tab 1: Mejor Match (Top 3) -->
+        <div id="tab-mejor-match" class="tab-content active">
+            {% if mejor_match %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    {% for wine in mejor_match %}
+                        {{ render_wine_card(wine, is_best=(loop.index == 1)) }}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="text-align: center; color: var(--text-muted); padding-top: 2rem;">No hay recomendaciones óptimas disponibles.</p>
+            {% endif %}
+        </div>
+
+        <!-- Tab 2: Tintos -->
+        {% if tintos %}
+            <div id="tab-tintos" class="tab-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    {% for wine in tintos %}
+                        {{ render_wine_card(wine) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Tab 3: Blancos -->
+        {% if blancos %}
+            <div id="tab-blancos" class="tab-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    {% for wine in blancos %}
+                        {{ render_wine_card(wine) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Tab 4: Espumantes -->
+        {% if espumantes %}
+            <div id="tab-espumantes" class="tab-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    {% for wine in espumantes %}
+                        {{ render_wine_card(wine) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Tab 5: Rosados -->
+        {% if rosados %}
+            <div id="tab-rosados" class="tab-content">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    {% for wine in rosados %}
+                        {{ render_wine_card(wine) }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Tab 6: Precio Calidad -->
+        <div id="tab-precio-calidad" class="tab-content">
+            {% if precio_calidad %}
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                    {% for wine in precio_calidad %}
+                        {{ render_wine_card(wine) }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Tab 7: Para Regalar -->
+        {% if es_regalo_intencion or regalo %}
+            <div id="tab-regalo" class="tab-content">
+                {% if regalo %}
+                    <div style="margin-bottom: 2rem; padding: 1rem; border-radius: 8px; background: rgba(207,171,52,0.06); border: 1px solid rgba(207,171,52,0.2); font-size: 0.92rem; line-height: 1.5; color: #fff;">
+                        🌟 <strong>Opciones seguras para regalar:</strong> Estas etiquetas se caracterizan por ser sumamente versátiles, de perfil aromático pulido y con excelente reputación de mercado para minimizar cualquier riesgo.
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                        {% for wine in regalo %}
+                            {{ render_wine_card(wine) }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="text-align: center; color: var(--text-muted); padding-top: 2rem;">No hay vinos específicos marcados como seguros para regalar.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <!-- Tab 8: Asado -->
+        {% if es_asado_comida or asado %}
+            <div id="tab-asado" class="tab-content">
+                {% if asado %}
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+                        {% for wine in asado %}
+                            {{ render_wine_card(wine) }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p style="text-align: center; color: var(--text-muted); padding-top: 2rem;">No hay opciones con la estructura necesaria para maridar asados en la selección actual.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+
     </div>
+
+    <!-- ASISTENTE / CHATBOT INTERNO DE RECOMENDACIÓN (Punto 10) -->
+    <div style="max-width: 750px; margin: 5rem auto 3rem auto; padding: 0 1rem;">
+        <div class="glass-panel" style="background: rgba(18, 10, 10, 0.9); border: 1px solid rgba(207, 171, 52, 0.35); border-radius: 16px; padding: 2.2rem 2rem; box-shadow: 0 15px 40px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 1rem;">
+                <span style="font-size: 1.8rem;">🤖</span>
+                <div style="text-align: left;">
+                    <h4 style="margin: 0; font-family: var(--font-serif); font-size: 1.25rem; color: #fff; font-weight: 500;">Asistente de Paladar Descorcha.IA</h4>
+                    <p style="margin: 0.1rem 0 0 0; font-size: 0.82rem; color: var(--text-muted);">Realizá consultas rápidas sobre tus vinos recomendados.</p>
+                </div>
+            </div>
+
+            <!-- Preguntas Rápidas del Botón -->
+            <div style="display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; margin-bottom: 1rem;">
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('asado')">🍖 ¿Cuál va mejor con asado?</button>
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('regalo')">🎁 ¿Cuál es más seguro para regalar?</button>
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('suave')">🍇 ¿Cuál es más suave?</button>
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('precio_calidad')">💎 ¿Cuál tiene mejor precio-calidad?</button>
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('cena')">🍽️ ¿Cuál elegirías para una cena?</button>
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('fresco')">❄️ ¿Cuál es más fresco y ligero?</button>
+                <button type="button" class="assistant-q-btn" onclick="askAssistant('intenso')">🔥 ¿Cuál es más intenso y con barrica?</button>
+            </div>
+
+            <!-- Contenedor donde se dibuja la burbuja de respuesta -->
+            <div id="chat-response-container">
+                <div style="color: rgba(255,255,255,0.3); font-size: 0.88rem; padding: 1rem; border: 1px dashed rgba(255,255,255,0.05); border-radius: 8px; font-style: italic;">
+                    Hacé clic en alguna pregunta superior y te responderé en caliente sobre tu catálogo.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón Rehacer Quiz -->
+    <div style="text-align: center; margin: 4rem 0 2rem 0;">
+        {% if client %}
+            <a href="/c/{{ client.client_slug }}/quiz?reset=1" class="btn" style="padding: 1rem 2.5rem; background: none; border: 1.5px solid var(--gold-primary); color: #fff; font-weight: 600; border-radius: 30px; text-decoration: none; display: inline-block; transition: all 0.2s;">Rehacer Quiz de Paladar</a>
+        {% else %}
+            <a href="/quiz?reset=1" class="btn" style="padding: 1rem 2.5rem; background: none; border: 1.5px solid var(--gold-primary); color: #fff; font-weight: 600; border-radius: 30px; text-decoration: none; display: inline-block; transition: all 0.2s;">Rehacer Quiz de Paladar</a>
+        {% endif %}
+    </div>
+
+    <!-- REGLAS CSS EMBEBIDAS -->
+    <style>
+        .tabs-header {
+            scrollbar-width: none;
+        }
+        .tabs-header::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0.75rem 1.4rem;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 30px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.22s ease;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            border-color: rgba(207, 171, 52, 0.5);
+            background: rgba(207, 171, 52, 0.05);
+        }
+
+        .tab-btn.active {
+            background: #cfab34;
+            color: #000;
+            border-color: #cfab34;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(207, 171, 52, 0.25);
+        }
+
+        .tab-btn.highlighted {
+            border-color: #cfab34;
+            color: var(--gold-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hover de Cards */
+        .wine-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(207,171,52,0.4) !important;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.55);
+        }
+
+        /* Botón Asistente Pregunta */
+        .assistant-q-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 0.55rem 1.1rem;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .assistant-q-btn:hover {
+            background: rgba(207, 171, 52, 0.08);
+            border-color: #cfab34;
+            color: #fff;
+        }
+
+        .assistant-q-btn:active {
+            transform: scale(0.97);
+        }
+    </style>
+
+    <!-- LOGICA JAVASCRIPT DEL FRONTEND -->
+    <script>
+        // Cargar recomendaciones serializadas para el asistente en caliente
+        const recommendations = {{ recommendations | tojson }};
+        const clientSlug = "{{ client.client_slug if client else 'demo_vinoteca' }}";
+
+        // Cambiar entre pestañas
+        function switchTab(evt, tabId) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Desactivar todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Activar tab actual
+            document.getElementById(tabId).classList.add('active');
+            evt.currentTarget.classList.add('active');
+
+            // Registrar evento de tab trackeo vía AJAX
+            fetch(`/track/tab_view/${clientSlug}/${tabId}`, { method: 'POST' });
+        }
+
+        // Toggle para la explicación de ¿Por qué este vino?
+        function toggleExplanation(btn, sku) {
+            const card = btn.closest('.wine-card');
+            const block = card.querySelector('.explanation-block');
+            
+            if (block.style.display === 'none') {
+                block.style.display = 'block';
+                btn.textContent = '💡 Ocultar explicación sensorial';
+                
+                // Enviar tracking AJAX
+                fetch(`/track/explanation/${clientSlug}/${sku}`, { method: 'POST' });
+            } else {
+                block.style.display = 'none';
+                btn.textContent = '💡 ¿Por qué me recomiendan este vino?';
+            }
+        }
+
+        // Lógica interactiva del Chatbot Asistente
+        function askAssistant(questionKey) {
+            // Registrar click del asistente AJAX
+            fetch(`/track/assistant/${clientSlug}/${questionKey}`, { method: 'POST' });
+
+            let answerText = "";
+            
+            if (questionKey === 'asado') {
+                const best = [...recommendations].sort((a,b) => (b.asado_score || 0) - (a.asado_score || 0))[0];
+                if (best) {
+                    answerText = `Para el asado te recomiendo llevar el **${best.title}** (${best.variedad}) de bodega **${best.winery}** ($${formatPrice(best.price)}). Tiene un score de asado del ${(best.asado_score * 100).toFixed(0)}%, lo que garantiza estructura y taninos que acompañan muy bien las grasas de las carnes rojas y las provoletas.`;
+                } else {
+                    answerText = "En tu selección actual de match de paladar no tenemos opciones con alta estructura tánica para asado robusto. Te sugiero revisar un tinto de buena concentración.";
+                }
+            } else if (questionKey === 'regalo') {
+                const best = recommendations.find(w => w.gift_safe) || recommendations[0];
+                if (best) {
+                    answerText = `La opción más segura para regalar de tu selección es **${best.title}** ($${formatPrice(best.price)}). Es un vino con una presentación excelente, de perfil sensorial muy equilibrado y alta aceptación general en el mercado.`;
+                } else {
+                    answerText = "Cualquier etiqueta de tu Top 3 es una gran opción de regalo, pero te sugiero un Malbec clásico o Red Blend de bodega reconocida.";
+                }
+            } else if (questionKey === 'suave') {
+                const best = [...recommendations].filter(w => !w.variedad.toLowerCase().includes('brut') && !w.variedad.toLowerCase().includes('espumante')).sort((a,b) => (a.cuerpo || 0.5) - (b.cuerpo || 0.5))[0];
+                if (best) {
+                    answerText = `El vino más suave y sedoso de tu lista recomendada es **${best.title}** ($${formatPrice(best.price)}). Su cuerpo ligero y taninos redondos lo hacen muy fluido y sumamente fácil de tomar.`;
+                }
+            } else if (questionKey === 'precio_calidad') {
+                const best = [...recommendations].sort((a,b) => (b.precio_calidad_score || 0) - (a.precio_calidad_score || 0))[0];
+                if (best) {
+                    answerText = `La etiqueta con mayor relación precio-calidad de tu listado es **${best.title}** ($${formatPrice(best.price)}). Te da una excelente complejidad de perfil aromático y persistencia para su rango de precio.`;
+                }
+            } else if (questionKey === 'cena') {
+                const best = recommendations[0]; // Top 1 match
+                if (best) {
+                    answerText = `Para una cena para lucirte, te sugiero ir con tu match principal: **${best.title}** ($${formatPrice(best.price)}). Es el vino que obtuvo la afinidad más alta adaptado a tu patrón de gustos cotidiana de paladar.`;
+                }
+            } else if (questionKey === 'fresco') {
+                const best = [...recommendations].sort((a,b) => (b.acidez || 0) - (a.acidez || 0))[0];
+                if (best) {
+                    answerText = `Para una sensación refrescante, crujiente y ligera, te recomiendo **${best.title}** ($${formatPrice(best.price)}). Destaca por su acidez limpia, cítrica o frutal vibrante.`;
+                }
+            } else if (questionKey === 'intenso') {
+                const best = [...recommendations].sort((a,b) => (b.cuerpo || 0) - (a.cuerpo || 0))[0];
+                if (best) {
+                    answerText = `Si buscás intensidad, volumen y persistencia con presencia de barrica, tu mejor opción es **${best.title}** ($${formatPrice(best.price)}). Posee gran concentración en boca y final prolongado.`;
+                }
+            }
+
+            // Renderizar respuesta en la burbuja del chat
+            const chatContainer = document.getElementById('chat-response-container');
+            chatContainer.innerHTML = `
+                <div style="background: rgba(207, 171, 52, 0.12); border: 1px solid rgba(207, 171, 52, 0.35); border-radius: 12px 12px 12px 0px; padding: 1.2rem 1.4rem; color: #fff; margin-top: 1rem; text-align: left; animation: fadeIn 0.3s ease;">
+                    <div style="font-weight: 600; color: #cfab34; font-size: 0.85rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
+                        <span>🤖 Asistente Descorcha.IA</span>
+                    </div>
+                    <p style="margin: 0; line-height: 1.5; font-size: 0.95rem; color: rgba(255,255,255,0.95);">${answerText}</p>
+                </div>
+            `;
+            chatContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function formatPrice(val) {
+            if (!val) return "0,00";
+            return parseFloat(val).toLocaleString('es-AR', { minimumFractionDigits: 2 });
+        }
+    </script>
 {% endblock %}
