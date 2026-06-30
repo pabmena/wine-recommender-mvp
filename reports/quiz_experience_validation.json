@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-06-30T00:55:25.938528",
+    "timestamp": "2026-06-30T01:24:43.098023",
     "verdict": "APTO",
     "results": [
         {
@@ -47,12 +47,12 @@
         "session_id": "test-session-quiz-experience",
         "total_events_tracked": 42,
         "tracked_event_types": [
-            "wine_explanation_opened",
-            "assistant_question_clicked",
+            "result_tab_viewed",
             "quiz_answered",
             "quiz_level_selected",
-            "result_tab_viewed",
-            "quiz_intent_selected"
+            "quiz_intent_selected",
+            "assistant_question_clicked",
+            "wine_explanation_opened"
         ]
     }
 }
